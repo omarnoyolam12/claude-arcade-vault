@@ -14,3 +14,12 @@ https://github.com/Klerith/fernando-skills
 ```bash
 npx skills@latest add Klerith/fernando-skills
 ```
+
+```bash
+npx skills add https://github.com/anthropics/skills --skill frontend-design
+```
+
+```bash
+npx skills add https://github.com/nextlevelbuilder/ui-ux-pro-max-skill --skill ui-ux-pro-max
+```
+

@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ARCADE VAULT - Home</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Anybody:wght@700;800;900&amp;family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-primary-fixed-variant": "#004f53",
+                      "primary-fixed": "#63f7ff",
+                      "on-secondary-container": "#5a0022",
+                      "on-secondary-fixed-variant": "#90003b",
+                      "on-error": "#690005",
+                      "surface-container": "#1f1f25",
+                      "on-surface-variant": "#b9caca",
+                      "surface-tint": "#00dce5",
+                      "tertiary": "#fdffb5",
+                      "primary": "#e9feff",
+                      "on-primary-container": "#006c71",
+                      "outline": "#849495",
+                      "secondary-container": "#ff4d80",
+                      "surface-variant": "#35343a",
+                      "primary-fixed-dim": "#00dce5",
+                      "on-primary-fixed": "#002021",
+                      "surface-container-highest": "#35343a",
+                      "on-tertiary-fixed-variant": "#474a00",
+                      "secondary-fixed": "#ffd9de",
+                      "on-background": "#e4e1e9",
+                      "error-container": "#93000a",
+                      "secondary-fixed-dim": "#ffb2bf",
+                      "on-error-container": "#ffdad6",
+                      "surface-container-lowest": "#0e0e13",
+                      "surface-dim": "#131318",
+                      "surface-container-high": "#2a292f",
+                      "on-surface": "#e4e1e9",
+                      "tertiary-container": "#dee700",
+                      "secondary": "#ffb2bf",
+                      "on-tertiary": "#303300",
+                      "on-secondary": "#660028",
+                      "inverse-primary": "#00696e",
+                      "on-primary": "#003739",
+                      "on-secondary-fixed": "#3f0016",
+                      "tertiary-fixed-dim": "#c7cf00",
+                      "background": "#131318",
+                      "tertiary-fixed": "#e3ec00",
+                      "outline-variant": "#3a494a",
+                      "surface-bright": "#39383e",
+                      "surface-container-low": "#1b1b20",
+                      "on-tertiary-fixed": "#1c1d00",
+                      "error": "#ffb4ab",
+                      "inverse-on-surface": "#303036",
+                      "on-tertiary-container": "#616600",
+                      "surface": "#131318",
+                      "primary-container": "#00f5ff",
+                      "inverse-surface": "#e4e1e9"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "margin": "32px",
+                      "gutter": "24px",
+                      "unit": "4px",
+                      "container-max": "1280px"
+              },
+              "fontFamily": {
+                      "body-lg": [
+                              "courierPrime"
+                      ],
+                      "display-lg": [
+                              "anybody"
+                      ],
+                      "headline-md": [
+                              "anybody"
+                      ],
+                      "body-md": [
+                              "courierPrime"
+                      ],
+                      "headline-lg": [
+                              "anybody"
+                      ],
+                      "label-sm": [
+                              "courierPrime"
+                      ],
+                      "label-lg": [
+                              "courierPrime"
+                      ]
+              },
+              "fontSize": {
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "1.5",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "display-lg": [
+                              "48px",
+                              {
+                                      "lineHeight": "1.1",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "900"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "1.5",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "fontWeight": "800"
+                              }
+                      ],
+                      "label-sm": [
+                              "12px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "label-lg": [
+                              "14px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "letterSpacing": "0.1em",
+                                      "fontWeight": "700"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+        /* CRT Scanline Effect */
+        body::before {
+            content: " ";
+            display: block;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 999;
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+        }
+
+        /* Flicker Animation */
+        @keyframes flicker {
+            0%, 19.999%, 22%, 62.999%, 64%, 64.999%, 70%, 100% {
+                opacity: .99;
+                text-shadow: -1px -1px 0 rgba(255,255,255,0.4), 1px -1px 0 rgba(255,255,255,0.4), -1px 1px 0 rgba(255,255,255,0.4), 1px 1px 0 rgba(255,255,255,0.4), 0 0 10px #63f7ff, 0 0 20px #63f7ff;
+            }
+            20%, 21.999%, 63%, 63.999%, 65%, 69.999% {
+                opacity: 0.4;
+                text-shadow: none;
+            }
+        }
+        .neon-flicker {
+            animation: flicker 4s infinite alternate;
+        }
+
+        /* Input Blinking Cursor */
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        .blinking-cursor::after {
+            content: "█";
+            animation: blink 1s step-end infinite;
+            color: #63f7ff;
+            margin-left: 4px;
+        }
+
+        /* Glitch text on hover */
+        @keyframes glitch-anim {
+            0% { clip: rect(10px, 9999px, 86px, 0); }
+            5% { clip: rect(12px, 9999px, 88px, 0); }
+            10% { clip: rect(6px, 9999px, 19px, 0); }
+            15% { clip: rect(69px, 9999px, 5px, 0); }
+            20% { clip: rect(13px, 9999px, 20px, 0); }
+            25% { clip: rect(4px, 9999px, 3px, 0); }
+            30% { clip: rect(83px, 9999px, 66px, 0); }
+            35% { clip: rect(72px, 9999px, 1px, 0); }
+            40% { clip: rect(4px, 9999px, 61px, 0); }
+            45% { clip: rect(22px, 9999px, 16px, 0); }
+            50% { clip: rect(2px, 9999px, 75px, 0); }
+            55% { clip: rect(13px, 9999px, 12px, 0); }
+            60% { clip: rect(98px, 9999px, 68px, 0); }
+            65% { clip: rect(32px, 9999px, 64px, 0); }
+            70% { clip: rect(51px, 9999px, 63px, 0); }
+            75% { clip: rect(22px, 9999px, 29px, 0); }
+            80% { clip: rect(26px, 9999px, 60px, 0); }
+            85% { clip: rect(41px, 9999px, 25px, 0); }
+            90% { clip: rect(73px, 9999px, 34px, 0); }
+            95% { clip: rect(28px, 9999px, 3px, 0); }
+            100% { clip: rect(13px, 9999px, 92px, 0); }
+        }
+        
+        .hover-glitch:hover {
+            position: relative;
+        }
+        .hover-glitch:hover::before {
+            content: attr(data-text);
+            position: absolute;
+            left: 2px;
+            text-shadow: -1px 0 red;
+            top: 0;
+            color: white;
+            background: black;
+            overflow: hidden;
+            clip: rect(0, 900px, 0, 0); 
+            animation: glitch-anim 2s infinite linear alternate-reverse;
+        }
+        .hover-glitch:hover::after {
+            content: attr(data-text);
+            position: absolute;
+            left: -2px;
+            text-shadow: -1px 0 blue;
+            top: 0;
+            color: white;
+            background: black;
+            overflow: hidden;
+            clip: rect(0, 900px, 0, 0); 
+            animation: glitch-anim 2s infinite linear alternate-reverse;
+        }
+
+        /* Utilities */
+        .neon-border-primary {
+            border: 2px solid #63f7ff;
+            box-shadow: 0 0 10px rgba(99, 247, 255, 0.4), inset 0 0 10px rgba(99, 247, 255, 0.2);
+        }
+        .neon-border-primary:hover {
+            box-shadow: 0 0 20px rgba(99, 247, 255, 0.8), inset 0 0 20px rgba(99, 247, 255, 0.4);
+        }
+        .neon-border-secondary {
+            border: 2px solid #ff4d80;
+            box-shadow: 0 0 10px rgba(255, 77, 128, 0.4), inset 0 0 10px rgba(255, 77, 128, 0.2);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen relative overflow-x-hidden">
+<!-- Background Shader -->
+<div class="fixed inset-0 w-full h-full -z-10 opacity-40">
+<!-- STITCH_SHADER_START:ANIMATION_1 class="absolute inset-0 w-full h-full" -->
+<div class="absolute inset-0 w-full h-full" style="display:block;">
+<canvas id="shader-canvas-ANIMATION_1" style="display:block;width:100%;height:100%"></canvas>
+<script>
+(function() {
+  const canvas = document.getElementById('shader-canvas-ANIMATION_1');
+
+  // Sync the WebGL drawing-buffer size with the CSS-driven layout size.
+  // This fires on initial layout and whenever the element is resized.
+  function syncSize() {
+    const w = canvas.clientWidth  || 1280;
+    const h = canvas.clientHeight || 720;
+    if (canvas.width !== w || canvas.height !== h) {
+      canvas.width  = w;
+      canvas.height = h;
+    }
+  }
+  if (typeof ResizeObserver !== 'undefined') {
+    new ResizeObserver(syncSize).observe(canvas);
+  }
+  syncSize();
+
+  const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+  if (!gl) return;
+  const vs = `attribute vec2 a_position;
+varying vec2 v_texCoord;
+void main() {
+  v_texCoord = a_position * 0.5 + 0.5;
+  gl_Position = vec4(a_position, 0.0, 1.0);
+}`;
+  const fs = `precision highp float;
+varying vec2 v_texCoord;
+uniform float u_time;
+uniform vec2 u_resolution;
+
+void main() {
+    vec2 uv = (v_texCoord - 0.5) * 2.0;
+    uv.x *= u_resolution.x / u_resolution.y;
+    
+    // Perspective transformation
+    float perspective = 1.0 / (uv.y + 1.5);
+    vec2 gridUv = vec2(uv.x * perspective, perspective - u_time * 0.2);
+    
+    // Grid lines
+    float grid = 0.0;
+    grid += smoothstep(0.02, 0.0, abs(fract(gridUv.x * 10.0) - 0.5));
+    grid += smoothstep(0.02, 0.0, abs(fract(gridUv.y * 10.0) - 0.5));
+    
+    // Horizon glow
+    float horizon = smoothstep(-0.2, 0.5, uv.y);
+    grid *= horizon;
+    
+    // Colors (Hot Magenta and Electric Cyan)
+    vec3 color = mix(vec3(1.0, 0.0, 0.43), vec3(0.0, 0.96, 1.0), 0.5 + 0.5 * sin(u_time + gridUv.y));
+    
+    // CRT scanline effect
+    float scanline = sin(v_texCoord.y * u_resolution.y * 1.5) * 0.1 + 0.9;
+    
+    gl_FragColor = vec4(color * grid * 0.8 * scanline, 1.0);
+}`;
+  function cs(type, src) {
+    const s = gl.createShader(type);
+    gl.shaderSource(s, src);
+    gl.compileShader(s);
+    return s;
+  }
+  const prog = gl.createProgram();
+  gl.attachShader(prog, cs(gl.VERTEX_SHADER, vs));
+  gl.attachShader(prog, cs(gl.FRAGMENT_SHADER, fs));
+  gl.linkProgram(prog);
+  gl.useProgram(prog);
+  const buf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
+  const pos = gl.getAttribLocation(prog, 'a_position');
+  gl.enableVertexAttribArray(pos);
+  gl.vertexAttribPointer(pos, 2, gl.FLOAT, false, 0, 0);
+  const uTime = gl.getUniformLocation(prog, 'u_time');
+  const uRes = gl.getUniformLocation(prog, 'u_resolution');
+  const uMouse = gl.getUniformLocation(prog, 'u_mouse');
+
+  // u_mouse is in pixel coordinates matching u_resolution (ShaderToy convention).
+  // Shaders that need normalized coords should use: u_mouse / u_resolution.
+  let mouse = { x: canvas.width / 2, y: canvas.height / 2 };
+  window.addEventListener('mousemove', (event) => {
+    const rect = canvas.getBoundingClientRect();
+    if (rect.width && rect.height) {
+      const nx = (event.clientX - rect.left) / rect.width;
+      const ny = 1.0 - (event.clientY - rect.top) / rect.height;
+      mouse.x = nx * canvas.width;
+      mouse.y = ny * canvas.height;
+    }
+  });
+
+  function render(t) {
+    if (typeof ResizeObserver === 'undefined') syncSize();
+    gl.viewport(0, 0, canvas.width, canvas.height);
+    if (uTime) gl.uniform1f(uTime, t * 0.001);
+    if (uRes) gl.uniform2f(uRes, canvas.width, canvas.height);
+    if (uMouse) gl.uniform2f(uMouse, mouse.x, mouse.y);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    requestAnimationFrame(render);
+  }
+  render(0);
+})();
+</script>
+</div>
+<!-- STITCH_SHADER_END:ANIMATION_1 -->
+</div>
+<!-- Header (Shared Component 1) -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-margin h-20 bg-background border-b-2 border-primary-fixed-dim shadow-[0_0_20px_rgba(0,220,229,0.4)]">
+<div class="font-display-lg text-display-lg text-primary-fixed drop-shadow-[0_0_10px_rgba(99,247,255,0.8)]">
+            ARCADE VAULT
+        </div>
+<nav class="hidden md:flex gap-gutter">
+<a class="font-body-lg text-body-lg uppercase text-primary-fixed border-b-2 border-primary-fixed pb-1 hover:skew-x-[-2deg] hover:drop-shadow-[0_0_8px_#63f7ff] active:scale-95 transition-all duration-100" href="#">Biblioteca</a>
+<a class="font-body-lg text-body-lg uppercase text-outline hover:text-primary-fixed transition-colors pb-1 hover:skew-x-[-2deg] hover:drop-shadow-[0_0_8px_#63f7ff] active:scale-95 transition-all duration-100" href="#">Salón de la Fama</a>
+</nav>
+<button class="font-body-lg text-body-lg uppercase text-primary-fixed hover:skew-x-[-2deg] hover:drop-shadow-[0_0_8px_#63f7ff] active:scale-95 transition-all duration-100 hidden md:block">
+            ACCEDER
+        </button>
+<!-- Mobile Menu Icon -->
+<button class="md:hidden text-primary-fixed">
+<span class="material-symbols-outlined" style="font-size: 32px;">menu</span>
+</button>
+</header>
+<!-- Main Content -->
+<main class="pt-32 pb-margin px-margin max-w-container-max mx-auto">
+<!-- Hero Section -->
+<section class="text-center mb-16 relative">
+<h1 class="font-display-lg text-display-lg text-primary-fixed uppercase neon-flicker mb-4">
+                INSERTA UNA MONEDA PARA JUGAR
+            </h1>
+<p class="font-body-lg text-body-lg text-secondary-fixed">
+<span class="blinking-cursor">SISTEMA EN LÍNEA. CARGANDO JUEGOS...</span>
+</p>
+</section>
+<!-- Search / Filter Bar -->
+<section class="mb-12">
+<div class="max-w-2xl mx-auto flex flex-col gap-2">
+<label class="font-label-lg text-label-lg text-tertiary-fixed uppercase" for="search">BÚSQUEDA DE DIRECTORIO</label>
+<div class="relative flex items-end">
+<span class="material-symbols-outlined text-primary-fixed absolute left-0 bottom-2">search</span>
+<input class="w-full bg-transparent border-0 border-b-2 border-primary-fixed text-primary-fixed font-body-lg text-body-lg pl-8 pb-2 focus:ring-0 focus:border-primary-fixed focus:outline-none placeholder:text-outline uppercase" id="search" placeholder="BUSCAR JUEGO..." type="text"/>
+</div>
+</div>
+</section>
+<!-- Game Grid -->
+<section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter">
+<!-- Game Card 1: Arkanoid -->
+<article class="bg-black border border-primary-fixed-dim rounded-DEFAULT overflow-hidden group relative transform transition-transform duration-300 hover:scale-[1.02] hover:-rotate-1 hover:shadow-[0_0_30px_rgba(99,247,255,0.3)]">
+<!-- Scanline overlay specific to card -->
+<div class="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0)50%,rgba(0,0,0,0.1)50%)] bg-[length:100%_4px] pointer-events-none z-10"></div>
+<div class="h-48 w-full relative border-b border-primary-fixed-dim">
+<img class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" data-alt="A dynamic, retro-futuristic digital illustration of a glowing paddle deflecting a vibrant neon ball towards an intricate wall of colorful, destructible blocks. The scene is set in a dark, cyberpunk void with intense cyan and magenta lighting, evoking a classic arcade feel with modern 3D flair. High contrast, sharp edges, 80s arcade aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCc3l0edN3SmHrND-uZJDyRLuSTtFTydcM7DP9yqrQ3kn8q5HG0cant7fj41PWS28gLXSArCAcEfpityBwproa7AwDLz2oj_x4G8hyZmThfs7uyPKau6-topsrgMSOXpM6nOcgp4CJA5zkFgEDhIvY_-eVGoSWN-gxo72koGXektrR2MzxgtXBIaL9yW6LUiwjLi2frvSTlX21eM13OVvSIkObn2Ut2oc6Gpy3qQUsCIvBLN06VFN6b6Q"/>
+<div class="absolute top-2 right-2 bg-primary-fixed px-2 py-1 rounded-sm z-20">
+<span class="font-label-sm text-label-sm text-black uppercase">ARCADE</span>
+</div>
+</div>
+<div class="p-4 relative z-20">
+<h2 class="font-headline-md text-headline-md text-primary-fixed uppercase mb-2 hover-glitch" data-text="ARKANOID">ARKANOID</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mb-4 h-16 overflow-hidden">
+                        Destruye los bloques con tu nave Vaus. Reflejos rápidos requeridos.
+                    </p>
+<div class="flex justify-between items-center">
+<button class="neon-border-primary bg-transparent text-primary-fixed font-body-lg text-body-lg uppercase px-4 py-2 hover:bg-primary-fixed/10 transition-all duration-200">
+                            JUGAR
+                        </button>
+<div class="text-right">
+<p class="font-label-sm text-label-sm text-tertiary-fixed uppercase">MEJOR PUNTUACIÓN</p>
+<p class="font-body-md text-body-md text-white">099,420</p>
+</div>
+</div>
+</div>
+</article>
+<!-- Game Card 2: Tetris -->
+<article class="bg-black border border-primary-fixed-dim rounded-DEFAULT overflow-hidden group relative transform transition-transform duration-300 hover:scale-[1.02] hover:-rotate-1 hover:shadow-[0_0_30px_rgba(99,247,255,0.3)]">
+<div class="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0)50%,rgba(0,0,0,0.1)50%)] bg-[length:100%_4px] pointer-events-none z-10"></div>
+<div class="h-48 w-full relative border-b border-primary-fixed-dim">
+<img class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" data-alt="A mesmerizing, isometric view of falling, luminescent geometric blocks (tetrominoes) in bright primary colors against a deep, starless black background. The blocks emanate a soft, vaporwave glow, creating a striking contrast. The composition feels structured yet dynamic, capturing the essence of classic puzzle gameplay." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCayv6DJedUO4xHrTPS1P1uh1rrlAjKMQ5_bWLHxKyYV3vtYNRdFXdLEV3TD6wAgkLMHKSaqXDsUlEYLPaD0re6JyjjUTJkUNFBqBGtYlpJLrSylS7ut74nGjf2aGPKSZZDdjXCPC98ScifUsl9wfmC-DWrOiVbj2huq36ibzxMGltsBWwYjwfDWtWKFQDSqoaI4UooKQLu3bgjEO9Rq_DPO3Be7Rvvj1WkKV2dVuc1hPip6ULD90RpyQ"/>
+<div class="absolute top-2 right-2 bg-primary-fixed px-2 py-1 rounded-sm z-20">
+<span class="font-label-sm text-label-sm text-black uppercase">PUZZLE</span>
+</div>
+</div>
+<div class="p-4 relative z-20">
+<h2 class="font-headline-md text-headline-md text-primary-fixed uppercase mb-2 hover-glitch" data-text="TETRIS">TETRIS</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mb-4 h-16 overflow-hidden">
+                        Alinea los bloques cayendo. El clásico rompecabezas soviético.
+                    </p>
+<div class="flex justify-between items-center">
+<button class="neon-border-primary bg-transparent text-primary-fixed font-body-lg text-body-lg uppercase px-4 py-2 hover:bg-primary-fixed/10 transition-all duration-200">
+                            JUGAR
+                        </button>
+<div class="text-right">
+<p class="font-label-sm text-label-sm text-tertiary-fixed uppercase">MEJOR PUNTUACIÓN</p>
+<p class="font-body-md text-body-md text-white">142,800</p>
+</div>
+</div>
+</div>
+</article>
+<!-- Game Card 3: Snake -->
+<article class="bg-black border border-primary-fixed-dim rounded-DEFAULT overflow-hidden group relative transform transition-transform duration-300 hover:scale-[1.02] hover:-rotate-1 hover:shadow-[0_0_30px_rgba(99,247,255,0.3)]">
+<div class="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0)50%,rgba(0,0,0,0.1)50%)] bg-[length:100%_4px] pointer-events-none z-10"></div>
+<div class="h-48 w-full relative border-b border-primary-fixed-dim">
+<img class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" data-alt="A stylized, glowing neon green digital snake navigating a rigid grid structure. The snake's body is composed of luminescent squares, chasing a bright magenta pixel apple. The background is a dark, brutalist grid echoing early computer interfaces, with intense contrast and a subtle CRT curvature effect." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCrtg6U5ooI26y3_nUQio0yD0pU0bbJ1izGXU1IKtpQmhH4XQdjzguR3N35slxMpKqIJ2FJ99rwhMohfjv2d3Kywa-r3lHS83wRFttwV0_6DYYQE_21PfEljEOcWXF-Xt2eoB4XfSPJj6Wh1QJtrFFqKx00doC4B9_CsTb2qlvX9qCOVGld8RwjXGXoByJudINuXwXxp6L-KnvSngkx6EuREqXHnFx_7e9assVnFX_KdhTs9baoIVVvzQ"/>
+<div class="absolute top-2 right-2 bg-primary-fixed px-2 py-1 rounded-sm z-20">
+<span class="font-label-sm text-label-sm text-black uppercase">CLÁSICO</span>
+</div>
+</div>
+<div class="p-4 relative z-20">
+<h2 class="font-headline-md text-headline-md text-primary-fixed uppercase mb-2 hover-glitch" data-text="SNAKE">SNAKE</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mb-4 h-16 overflow-hidden">
+                        Come para crecer. Evita morder tu propia cola.
+                    </p>
+<div class="flex justify-between items-center">
+<button class="neon-border-primary bg-transparent text-primary-fixed font-body-lg text-body-lg uppercase px-4 py-2 hover:bg-primary-fixed/10 transition-all duration-200">
+                            JUGAR
+                        </button>
+<div class="text-right">
+<p class="font-label-sm text-label-sm text-tertiary-fixed uppercase">MEJOR PUNTUACIÓN</p>
+<p class="font-body-md text-body-md text-white">003,150</p>
+</div>
+</div>
+</div>
+</article>
+<!-- Game Card 4: Pac-Man -->
+<article class="bg-black border border-primary-fixed-dim rounded-DEFAULT overflow-hidden group relative transform transition-transform duration-300 hover:scale-[1.02] hover:-rotate-1 hover:shadow-[0_0_30px_rgba(99,247,255,0.3)]">
+<div class="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0)50%,rgba(0,0,0,0.1)50%)] bg-[length:100%_4px] pointer-events-none z-10"></div>
+<div class="h-48 w-full relative border-b border-primary-fixed-dim">
+<img class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" data-alt="An abstract, high-contrast neon interpretation of a classic maze game. A glowing yellow circle with a wedge missing navigates deep blue neon corridors, pursued by vibrant, ghostly figures in cyan, magenta, and orange. The atmosphere is tense and energetic, set against a pitch-black background with retro-arcade lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC41uAWvQRUmq2E9ZTgwtjZG-LzgacAh9NPPtn-FGRSeWHrOwdHoiowTvjgpH8Uq-AvUkMik8zlaemE3Cz5s3egIbmkx3XEdBsT1xILKzUYgXAhYez4Ler-KhINTONmL3sMjf3eKaQ7zidRmjjoIreFSWUPgValKJcORnIWj54_FdqsWTKIZ4Kg-49RLa3SDWqBcPCWV9PKZGC7gKYb2OG3kD2divTuT8nZs-6TBOE8d7ZUwjaKWAfnnw"/>
+<div class="absolute top-2 right-2 bg-primary-fixed px-2 py-1 rounded-sm z-20">
+<span class="font-label-sm text-label-sm text-black uppercase">MAZE</span>
+</div>
+</div>
+<div class="p-4 relative z-20">
+<h2 class="font-headline-md text-headline-md text-primary-fixed uppercase mb-2 hover-glitch" data-text="PAC-MAN">PAC-MAN</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mb-4 h-16 overflow-hidden">
+                        Devora los puntos. Huye de los fantasmas. Sobrevive al laberinto.
+                    </p>
+<div class="flex justify-between items-center">
+<button class="neon-border-primary bg-transparent text-primary-fixed font-body-lg text-body-lg uppercase px-4 py-2 hover:bg-primary-fixed/10 transition-all duration-200">
+                            JUGAR
+                        </button>
+<div class="text-right">
+<p class="font-label-sm text-label-sm text-tertiary-fixed uppercase">MEJOR PUNTUACIÓN</p>
+<p class="font-body-md text-body-md text-white">333,330</p>
+</div>
+</div>
+</div>
+</article>
+<!-- Game Card 5: Space Invaders -->
+<article class="bg-black border border-primary-fixed-dim rounded-DEFAULT overflow-hidden group relative transform transition-transform duration-300 hover:scale-[1.02] hover:-rotate-1 hover:shadow-[0_0_30px_rgba(99,247,255,0.3)]">
+<div class="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0)50%,rgba(0,0,0,0.1)50%)] bg-[length:100%_4px] pointer-events-none z-10"></div>
+<div class="h-48 w-full relative border-b border-primary-fixed-dim">
+<img class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" data-alt="A menacing armada of blocky, neon-green pixelated alien spacecraft descending against a dark, starry void. Laser beams in bright magenta cut through the darkness. The scene is rendered with a heavy CRT monitor effect, prominent scanlines, and a glowing, nostalgic 80s arcade cabinet aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBVHxYl03cSCvacfb0Mki3J-WTJk-_-hoti5BHYqm_U_xKp_gHyWhHDw61rGweDp0UQ0vEMbhhpmpH2zifnXnN09G7VSHs6zVLrkEPgYOyUR3gM3c-Z6Y6WVJ_94ccVKs-v_5HFVOf3VbrzfZ13Mdb_t6VIYrBmcs0J0H3qGUY5stNPXyUQvXNeRgUVzm7M93Oz_6FRyxwvFeiq7ftQn8o7ZYdUMQmcdpa5gJFkLP8niyAubTZYyZ_6nA"/>
+<div class="absolute top-2 right-2 bg-primary-fixed px-2 py-1 rounded-sm z-20">
+<span class="font-label-sm text-label-sm text-black uppercase">SHOOTER</span>
+</div>
+</div>
+<div class="p-4 relative z-20">
+<h2 class="font-headline-md text-headline-md text-primary-fixed uppercase mb-2 hover-glitch" data-text="SPACE INVADERS">SPACE INVADERS</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mb-4 h-16 overflow-hidden">
+                        Defiende la Tierra de hordas alienígenas en descenso constante.
+                    </p>
+<div class="flex justify-between items-center">
+<button class="neon-border-primary bg-transparent text-primary-fixed font-body-lg text-body-lg uppercase px-4 py-2 hover:bg-primary-fixed/10 transition-all duration-200">
+                            JUGAR
+                        </button>
+<div class="text-right">
+<p class="font-label-sm text-label-sm text-tertiary-fixed uppercase">MEJOR PUNTUACIÓN</p>
+<p class="font-body-md text-body-md text-white">045,990</p>
+</div>
+</div>
+</div>
+</article>
+<!-- Game Card 6: Asteroids -->
+<article class="bg-black border border-primary-fixed-dim rounded-DEFAULT overflow-hidden group relative transform transition-transform duration-300 hover:scale-[1.02] hover:-rotate-1 hover:shadow-[0_0_30px_rgba(99,247,255,0.3)]">
+<div class="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0)50%,rgba(0,0,0,0.1)50%)] bg-[length:100%_4px] pointer-events-none z-10"></div>
+<div class="h-48 w-full relative border-b border-primary-fixed-dim">
+<img class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" data-alt="A minimalist, vector-graphics style illustration of a triangular spaceship navigating a chaotic field of jagged, geometric asteroids. The lines glow intensely in cyan against a pure black background, simulating an early oscilloscope display. Bright, sharp, and highly technical retro-futuristic style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDqMvMTtdgfavgA6v3IfkqCXYMrSeyoUA_l8RXjHxD8TmU0qwMZl8B6vhAZdEVg9fUmmaSpafS8hlfCwjPYXh_PCoHO6waPg7Yth0f3SwCpUccN1u7CKAyQg2yzGBTyoXMXGtjOQ1g5pq2vTQ1Pqxu-aXDX86JTSQ0-vRw6nwoORG2opYyxkZLN8ypOwaYrN2N6HieJgtdAkJrFrJsoXMSB4_cwooOt-HrcRn3d6wZgdNaDr7gK94Gi2w"/>
+<div class="absolute top-2 right-2 bg-primary-fixed px-2 py-1 rounded-sm z-20">
+<span class="font-label-sm text-label-sm text-black uppercase">SHOOTER</span>
+</div>
+</div>
+<div class="p-4 relative z-20">
+<h2 class="font-headline-md text-headline-md text-primary-fixed uppercase mb-2 hover-glitch" data-text="ASTEROIDS">ASTEROIDS</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mb-4 h-16 overflow-hidden">
+                        Navega el campo de asteroides. Dispara para sobrevivir al caos espacial.
+                    </p>
+<div class="flex justify-between items-center">
+<button class="neon-border-primary bg-transparent text-primary-fixed font-body-lg text-body-lg uppercase px-4 py-2 hover:bg-primary-fixed/10 transition-all duration-200">
+                            JUGAR
+                        </button>
+<div class="text-right">
+<p class="font-label-sm text-label-sm text-tertiary-fixed uppercase">MEJOR PUNTUACIÓN</p>
+<p class="font-body-md text-body-md text-white">102,400</p>
+</div>
+</div>
+</div>
+</article>
+</section>
+</main>
+<!-- Footer (Shared Component 2) -->
+<footer class="w-full py-8 px-margin flex flex-col md:flex-row justify-between items-center gap-gutter bg-surface-container-lowest border-t border-outline-variant flat no shadows mt-12 relative z-10">
+<div class="font-headline-md text-headline-md text-tertiary">
+            © 1984 ARCADE VAULT - INSERT COIN
+        </div>
+<nav class="flex gap-4">
+<a class="font-label-sm text-label-sm uppercase text-outline hover:text-tertiary-fixed-dim transition-opacity duration-300" href="#">Soporte</a>
+<a class="font-label-sm text-label-sm uppercase text-outline hover:text-tertiary-fixed-dim transition-opacity duration-300" href="#">Privacidad</a>
+<a class="font-label-sm text-label-sm uppercase text-outline hover:text-tertiary-fixed-dim transition-opacity duration-300" href="#">Términos</a>
+</nav>
+</footer>
+</body></html>
