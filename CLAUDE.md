@@ -29,6 +29,9 @@ No hay framework de tests configurado todavía.
 - **Alias de imports**: `@/*` resuelve a la raíz del repo (`tsconfig.json`).
 - **Fuentes**: `next/font/google` (Geist / Geist Mono) expuestas como CSS variables desde el layout raíz.
 
+## Skill
+Usa siempre /frontend-design para diseñar la interfaz de usuario.
+
 ## Flujo de trabajo: Spec Driven Design
 
 El proyecto sigue diseño guiado por especificación con los skills de `Klerith/fernando-skills` (instalados vía `npx skills@latest add Klerith/fernando-skills`). Usa `/spec` para redactar la especificación de una funcionalidad y `/spec-impl` para implementarla a partir de esa spec.
