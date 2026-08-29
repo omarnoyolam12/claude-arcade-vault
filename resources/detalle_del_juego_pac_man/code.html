@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ARCADE VAULT - Pac-Man</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Anybody:wght@700;800;900&amp;family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-primary-fixed-variant": "#004f53",
+                      "primary-fixed": "#63f7ff",
+                      "on-secondary-container": "#5a0022",
+                      "on-secondary-fixed-variant": "#90003b",
+                      "on-error": "#690005",
+                      "surface-container": "#1f1f25",
+                      "on-surface-variant": "#b9caca",
+                      "surface-tint": "#00dce5",
+                      "tertiary": "#fdffb5",
+                      "primary": "#e9feff",
+                      "on-primary-container": "#006c71",
+                      "outline": "#849495",
+                      "secondary-container": "#ff4d80",
+                      "surface-variant": "#35343a",
+                      "primary-fixed-dim": "#00dce5",
+                      "on-primary-fixed": "#002021",
+                      "surface-container-highest": "#35343a",
+                      "on-tertiary-fixed-variant": "#474a00",
+                      "secondary-fixed": "#ffd9de",
+                      "on-background": "#e4e1e9",
+                      "error-container": "#93000a",
+                      "secondary-fixed-dim": "#ffb2bf",
+                      "on-error-container": "#ffdad6",
+                      "surface-container-lowest": "#0e0e13",
+                      "surface-dim": "#131318",
+                      "surface-container-high": "#2a292f",
+                      "on-surface": "#e4e1e9",
+                      "tertiary-container": "#dee700",
+                      "secondary": "#ffb2bf",
+                      "on-tertiary": "#303300",
+                      "on-secondary": "#660028",
+                      "inverse-primary": "#00696e",
+                      "on-primary": "#003739",
+                      "on-secondary-fixed": "#3f0016",
+                      "tertiary-fixed-dim": "#c7cf00",
+                      "background": "#131318",
+                      "tertiary-fixed": "#e3ec00",
+                      "outline-variant": "#3a494a",
+                      "surface-bright": "#39383e",
+                      "surface-container-low": "#1b1b20",
+                      "on-tertiary-fixed": "#1c1d00",
+                      "error": "#ffb4ab",
+                      "inverse-on-surface": "#303036",
+                      "on-tertiary-container": "#616600",
+                      "surface": "#131318",
+                      "primary-container": "#00f5ff",
+                      "inverse-surface": "#e4e1e9"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "margin": "32px",
+                      "gutter": "24px",
+                      "unit": "4px",
+                      "container-max": "1280px"
+              },
+              "fontFamily": {
+                      "body-lg": [
+                              "Courier Prime"
+                      ],
+                      "display-lg": [
+                              "Anybody"
+                      ],
+                      "headline-md": [
+                              "Anybody"
+                      ],
+                      "body-md": [
+                              "Courier Prime"
+                      ],
+                      "headline-lg": [
+                              "Anybody"
+                      ],
+                      "label-sm": [
+                              "Courier Prime"
+                      ],
+                      "label-lg": [
+                              "Courier Prime"
+                      ]
+              },
+              "fontSize": {
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "1.5",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "display-lg": [
+                              "48px",
+                              {
+                                      "lineHeight": "1.1",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "900"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "1.5",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "fontWeight": "800"
+                              }
+                      ],
+                      "label-sm": [
+                              "12px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "label-lg": [
+                              "14px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "letterSpacing": "0.1em",
+                                      "fontWeight": "700"
+                              }
+                      ]
+              }
+            },
+          },
+        }
+      </script>
+<style>
+        .crt::before {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 2;
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+        }
+        
+        .glow-text {
+            text-shadow: 0 0 10px rgba(99, 247, 255, 0.8), 0 0 20px rgba(99, 247, 255, 0.4);
+        }
+        .glow-box-primary {
+            box-shadow: 0 0 15px rgba(99, 247, 255, 0.4);
+        }
+        .glow-box-secondary {
+            box-shadow: 0 0 15px rgba(255, 77, 128, 0.4);
+        }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        .blinking-cursor {
+            animation: blink 1s step-end infinite;
+        }
+
+        @keyframes glitch {
+            0% { transform: translate(0) }
+            20% { transform: translate(-2px, 1px) }
+            40% { transform: translate(-1px, -1px) }
+            60% { transform: translate(2px, 1px) }
+            80% { transform: translate(1px, -1px) }
+            100% { transform: translate(0) }
+        }
+        .hover-glitch:hover {
+            animation: glitch 0.3s cubic-bezier(.25, .46, .45, .94) both infinite;
+        }
+        
+        .scanline-overlay {
+            background-image: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 1px,
+                rgba(0, 0, 0, 0.1) 1px,
+                rgba(0, 0, 0, 0.1) 2px
+            );
+        }
+      </style>
+</head>
+<body class="bg-background text-on-background min-h-screen relative font-body-md crt overflow-x-hidden selection:bg-primary-fixed selection:text-background">
+<!-- Top Navigation (Suppressed per Nav rules for transactional/detail screen, keeping minimalist header for Vault link) -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-margin h-20 bg-background border-b-2 border-primary-fixed-dim shadow-[0_0_20px_rgba(0,220,229,0.4)]">
+<div class="font-display-lg text-display-lg text-primary-fixed drop-shadow-[0_0_10px_rgba(99,247,255,0.8)]">
+            ARCADE VAULT
+        </div>
+<a class="font-body-lg text-body-lg uppercase text-secondary-container border-2 border-secondary-container px-6 py-2 hover:bg-secondary-container hover:text-background transition-colors glow-box-secondary hover-glitch flex items-center gap-2" href="#">
+<span class="material-symbols-outlined text-xl">arrow_back</span>
+            VOLVER AL VAULT
+        </a>
+</header>
+<!-- Background Shader -->
+<div class="fixed inset-0 z-0 opacity-40">
+<!-- STITCH_SHADER_START:ANIMATION_1 class="absolute inset-0 w-full h-full" -->
+<div class="absolute inset-0 w-full h-full" style="display:block;">
+<canvas id="shader-canvas-ANIMATION_1" style="display:block;width:100%;height:100%"></canvas>
+<script>
+(function() {
+  const canvas = document.getElementById('shader-canvas-ANIMATION_1');
+
+  // Sync the WebGL drawing-buffer size with the CSS-driven layout size.
+  // This fires on initial layout and whenever the element is resized.
+  function syncSize() {
+    const w = canvas.clientWidth  || 1280;
+    const h = canvas.clientHeight || 720;
+    if (canvas.width !== w || canvas.height !== h) {
+      canvas.width  = w;
+      canvas.height = h;
+    }
+  }
+  if (typeof ResizeObserver !== 'undefined') {
+    new ResizeObserver(syncSize).observe(canvas);
+  }
+  syncSize();
+
+  const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+  if (!gl) return;
+  const vs = `attribute vec2 a_position;
+varying vec2 v_texCoord;
+void main() {
+  v_texCoord = a_position * 0.5 + 0.5;
+  gl_Position = vec4(a_position, 0.0, 1.0);
+}`;
+  const fs = `precision highp float;
+varying vec2 v_texCoord;
+uniform float u_time;
+uniform vec2 u_resolution;
+
+void main() {
+    vec2 uv = (v_texCoord - 0.5) * 2.0;
+    uv.x *= u_resolution.x / u_resolution.y;
+    
+    // Perspective transformation
+    float perspective = 1.0 / (uv.y + 1.5);
+    vec2 gridUv = vec2(uv.x * perspective, perspective - u_time * 0.2);
+    
+    // Grid lines
+    float grid = 0.0;
+    grid += smoothstep(0.02, 0.0, abs(fract(gridUv.x * 10.0) - 0.5));
+    grid += smoothstep(0.02, 0.0, abs(fract(gridUv.y * 10.0) - 0.5));
+    
+    // Horizon glow
+    float horizon = smoothstep(-0.2, 0.5, uv.y);
+    grid *= horizon;
+    
+    // Colors (Hot Magenta and Electric Cyan)
+    vec3 color = mix(vec3(1.0, 0.0, 0.43), vec3(0.0, 0.96, 1.0), 0.5 + 0.5 * sin(u_time + gridUv.y));
+    
+    // CRT scanline effect
+    float scanline = sin(v_texCoord.y * u_resolution.y * 1.5) * 0.1 + 0.9;
+    
+    gl_FragColor = vec4(color * grid * 0.8 * scanline, 1.0);
+}`;
+  function cs(type, src) {
+    const s = gl.createShader(type);
+    gl.shaderSource(s, src);
+    gl.compileShader(s);
+    return s;
+  }
+  const prog = gl.createProgram();
+  gl.attachShader(prog, cs(gl.VERTEX_SHADER, vs));
+  gl.attachShader(prog, cs(gl.FRAGMENT_SHADER, fs));
+  gl.linkProgram(prog);
+  gl.useProgram(prog);
+  const buf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
+  const pos = gl.getAttribLocation(prog, 'a_position');
+  gl.enableVertexAttribArray(pos);
+  gl.vertexAttribPointer(pos, 2, gl.FLOAT, false, 0, 0);
+  const uTime = gl.getUniformLocation(prog, 'u_time');
+  const uRes = gl.getUniformLocation(prog, 'u_resolution');
+  const uMouse = gl.getUniformLocation(prog, 'u_mouse');
+
+  // u_mouse is in pixel coordinates matching u_resolution (ShaderToy convention).
+  // Shaders that need normalized coords should use: u_mouse / u_resolution.
+  let mouse = { x: canvas.width / 2, y: canvas.height / 2 };
+  window.addEventListener('mousemove', (event) => {
+    const rect = canvas.getBoundingClientRect();
+    if (rect.width && rect.height) {
+      const nx = (event.clientX - rect.left) / rect.width;
+      const ny = 1.0 - (event.clientY - rect.top) / rect.height;
+      mouse.x = nx * canvas.width;
+      mouse.y = ny * canvas.height;
+    }
+  });
+
+  function render(t) {
+    if (typeof ResizeObserver === 'undefined') syncSize();
+    gl.viewport(0, 0, canvas.width, canvas.height);
+    if (uTime) gl.uniform1f(uTime, t * 0.001);
+    if (uRes) gl.uniform2f(uRes, canvas.width, canvas.height);
+    if (uMouse) gl.uniform2f(uMouse, mouse.x, mouse.y);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    requestAnimationFrame(render);
+  }
+  render(0);
+})();
+</script>
+</div>
+<!-- STITCH_SHADER_END:ANIMATION_1 -->
+</div>
+<!-- Main Canvas -->
+<main class="relative z-10 pt-32 pb-margin px-margin max-w-container-max mx-auto min-h-screen flex flex-col md:flex-row gap-gutter">
+<!-- Left Column: Game Details -->
+<section class="flex-1 flex flex-col gap-gutter">
+<!-- Hero Image Placeholder -->
+<div class="relative w-full aspect-video border-2 border-primary-fixed glow-box-primary bg-surface-container overflow-hidden group">
+<div class="absolute inset-0 scanline-overlay z-10 pointer-events-none"></div>
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-80 mix-blend-screen" data-alt="A vintage arcade cabinet screen showing the classic Pac-Man maze glowing in bright neon blue lines against a deep black void. Neon yellow Pac-Man is eating glowing pellets, pursued by colorful neon ghosts. 80s retro-future vaporwave aesthetic, high contrast, CRT scanline effect, cinematic lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD9lWqjBxqj9JUNUPhD_Tb8UuCYE90NUswRr1SH8_jUhOxTzrCCQLzitcLPLL6dmtnxDK7SKnRJkaujosHvO8UGBITnoVwZDC3d37Uc60iWHqZjjqWCzq6uae_F6T3XvwoR1sq43kjk9pR0Y5CQkQksGVdMevtqCpGBLtrAQDBp6JGFwBIIyaIj0NqzCZ9_GIufX7_61YzF69HUDsMpXwMAxhK1SItzGO15LLuUx_fE8BrDeWct6a9TYQ"/>
+<!-- Game Status Overlay -->
+<div class="absolute top-4 left-4 z-20 flex gap-2">
+<span class="bg-primary-fixed text-background px-2 py-1 font-label-sm text-label-sm uppercase">ARCADE</span>
+<span class="bg-primary-fixed text-background px-2 py-1 font-label-sm text-label-sm uppercase">1980</span>
+</div>
+</div>
+<!-- Game Info -->
+<div class="bg-surface-container border border-primary-fixed-dim p-8 relative overflow-hidden group hover:rotate-1 transition-transform duration-300">
+<div class="absolute inset-0 scanline-overlay pointer-events-none opacity-20"></div>
+<h1 class="font-display-lg text-display-lg text-primary-fixed glow-text uppercase mb-4 tracking-wider">
+                    PAC-MAN <span class="blinking-cursor">█</span>
+</h1>
+<div class="flex gap-4 mb-6">
+<span class="bg-primary-fixed text-background px-3 py-1 font-label-sm text-label-sm uppercase border border-primary-fixed">LABERINTO</span>
+<span class="bg-primary-fixed text-background px-3 py-1 font-label-sm text-label-sm uppercase border border-primary-fixed">CLÁSICO</span>
+</div>
+<p class="font-body-lg text-body-lg text-on-surface-variant leading-relaxed max-w-2xl">
+                    Navega por un laberinto de neón devorando puntos mientras evitas a los implacables fantasmas. Come las pastillas de poder para cambiar las tornas y sumar puntos extra. Un verdadero clásico de las máquinas recreativas que definió la era dorada de los videojuegos.
+                </p>
+<div class="mt-8">
+<button class="w-full md:w-auto font-display-lg text-display-lg uppercase text-primary-fixed border-2 border-primary-fixed px-12 py-4 hover:bg-primary-fixed hover:text-background transition-all glow-box-primary hover-glitch animate-pulse">
+                        JUGAR AHORA
+                    </button>
+</div>
+</div>
+</section>
+<!-- Right Column: Leaderboard Sidebar -->
+<aside class="w-full md:w-[400px] flex-shrink-0">
+<div class="bg-surface-container border border-primary-fixed-dim h-full relative overflow-hidden group">
+<div class="absolute inset-0 scanline-overlay pointer-events-none opacity-20"></div>
+<div class="p-6 border-b border-primary-fixed-dim">
+<h2 class="font-headline-md text-headline-md text-tertiary uppercase tracking-widest flex items-center gap-2">
+<span class="material-symbols-outlined text-tertiary">leaderboard</span>
+                         MEJORES PUNTUACIONES
+                     </h2>
+</div>
+<div class="p-6">
+<!-- Terminal style headers -->
+<div class="flex justify-between font-label-sm text-label-sm text-tertiary-fixed mb-4 border-b border-primary-fixed-dim pb-2 uppercase">
+<span class="w-12">RANGO</span>
+<span class="flex-1">JUGADOR</span>
+<span class="text-right">PTS</span>
+</div>
+<ul class="space-y-3 font-body-md text-body-md">
+<!-- Rank 1 -->
+<li class="flex justify-between items-center text-primary-fixed hover:bg-surface-variant p-2 -mx-2 transition-colors">
+<span class="w-12 text-tertiary font-bold">1ST</span>
+<span class="flex-1 uppercase tracking-wider">NEON_KNIGHT</span>
+<span class="text-right font-bold">3,333,360</span>
+</li>
+<!-- Rank 2 -->
+<li class="flex justify-between items-center text-on-surface-variant hover:bg-surface-variant p-2 -mx-2 transition-colors">
+<span class="w-12">2ND</span>
+<span class="flex-1 uppercase tracking-wider">CYBER_GHOST</span>
+<span class="text-right">3,124,500</span>
+</li>
+<!-- Rank 3 -->
+<li class="flex justify-between items-center text-on-surface-variant hover:bg-surface-variant p-2 -mx-2 transition-colors">
+<span class="w-12">3RD</span>
+<span class="flex-1 uppercase tracking-wider">RETRO_KING</span>
+<span class="text-right">2,890,120</span>
+</li>
+<!-- Generic Ranks -->
+<li class="flex justify-between items-center text-on-surface-variant hover:bg-surface-variant p-2 -mx-2 transition-colors opacity-80">
+<span class="w-12">4TH</span>
+<span class="flex-1 uppercase tracking-wider">PLAYER_ONE</span>
+<span class="text-right">2,500,000</span>
+</li>
+<li class="flex justify-between items-center text-on-surface-variant hover:bg-surface-variant p-2 -mx-2 transition-colors opacity-70">
+<span class="w-12">5TH</span>
+<span class="flex-1 uppercase tracking-wider">WINKY</span>
+<span class="text-right">1,980,450</span>
+</li>
+</ul>
+</div>
+</div>
+</aside>
+</main>
+<!-- Footer Component -->
+<footer class="w-full py-8 px-margin flex flex-col md:flex-row justify-between items-center gap-gutter bg-surface-container-lowest border-t border-outline-variant relative z-10">
+<div class="font-headline-md text-headline-md text-tertiary">
+            © 1984 ARCADE VAULT - INSERT COIN
+        </div>
+<nav class="flex gap-6">
+<a class="font-label-sm text-label-sm uppercase text-outline hover:text-tertiary-fixed-dim transition-opacity duration-300" href="#">Soporte</a>
+<a class="font-label-sm text-label-sm uppercase text-outline hover:text-tertiary-fixed-dim transition-opacity duration-300" href="#">Privacidad</a>
+<a class="font-label-sm text-label-sm uppercase text-outline hover:text-tertiary-fixed-dim transition-opacity duration-300" href="#">Términos</a>
+</nav>
+</footer>
+</body></html>

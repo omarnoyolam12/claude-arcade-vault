@@ -1,0 +1,439 @@
+<!DOCTYPE html><html class="dark" lang="es" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>ARCADE VAULT - Authentication</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Anybody:wght@700;800;900&amp;family=Courier+Prime:wght@400;700&amp;family=Press+Start+2P&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-primary-fixed-variant": "#004f53",
+                      "primary-fixed": "#63f7ff",
+                      "on-secondary-container": "#5a0022",
+                      "on-secondary-fixed-variant": "#90003b",
+                      "on-error": "#690005",
+                      "surface-container": "#1f1f25",
+                      "on-surface-variant": "#b9caca",
+                      "surface-tint": "#00dce5",
+                      "tertiary": "#fdffb5",
+                      "primary": "#e9feff",
+                      "on-primary-container": "#006c71",
+                      "outline": "#849495",
+                      "secondary-container": "#ff4d80",
+                      "surface-variant": "#35343a",
+                      "primary-fixed-dim": "#00dce5",
+                      "on-primary-fixed": "#002021",
+                      "surface-container-highest": "#35343a",
+                      "on-tertiary-fixed-variant": "#474a00",
+                      "secondary-fixed": "#ffd9de",
+                      "on-background": "#e4e1e9",
+                      "error-container": "#93000a",
+                      "secondary-fixed-dim": "#ffb2bf",
+                      "on-error-container": "#ffdad6",
+                      "surface-container-lowest": "#0e0e13",
+                      "surface-dim": "#131318",
+                      "surface-container-high": "#2a292f",
+                      "on-surface": "#e4e1e9",
+                      "tertiary-container": "#dee700",
+                      "secondary": "#ffb2bf",
+                      "on-tertiary": "#303300",
+                      "on-secondary": "#660028",
+                      "inverse-primary": "#00696e",
+                      "on-primary": "#003739",
+                      "on-secondary-fixed": "#3f0016",
+                      "tertiary-fixed-dim": "#c7cf00",
+                      "background": "#131318",
+                      "tertiary-fixed": "#e3ec00",
+                      "outline-variant": "#3a494a",
+                      "surface-bright": "#39383e",
+                      "surface-container-low": "#1b1b20",
+                      "on-tertiary-fixed": "#1c1d00",
+                      "error": "#ffb4ab",
+                      "inverse-on-surface": "#303036",
+                      "on-tertiary-container": "#616600",
+                      "surface": "#131318",
+                      "primary-container": "#00f5ff",
+                      "inverse-surface": "#e4e1e9"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "margin": "32px",
+                      "gutter": "24px",
+                      "unit": "4px",
+                      "container-max": "1280px"
+              },
+              "fontFamily": {
+                      "body-lg": [
+                              "Courier Prime", "monospace"
+                      ],
+                      "display-lg": [
+                              "'Press Start 2P'", "cursive"
+                      ],
+                      "headline-md": [
+                              "'Press Start 2P'", "cursive"
+                      ],
+                      "body-md": [
+                              "Courier Prime", "monospace"
+                      ],
+                      "headline-lg": [
+                              "'Press Start 2P'", "cursive"
+                      ],
+                      "label-sm": [
+                              "Courier Prime", "monospace"
+                      ],
+                      "label-lg": [
+                              "Courier Prime", "monospace"
+                      ]
+              },
+              "fontSize": {
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "1.5",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "display-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "1.5",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "1.5",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "1.5",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-lg": [
+                              "24px",
+                              {
+                                      "lineHeight": "1.5",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-sm": [
+                              "12px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "label-lg": [
+                              "14px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "letterSpacing": "0.1em",
+                                      "fontWeight": "700"
+                              }
+                      ]
+              }
+            },
+          },
+        }
+      </script>
+<style>
+        body {
+            background-color: theme('colors.background');
+            color: theme('colors.on-background');
+        }
+
+        /* CRT Scanline Effect */
+        body::before {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 20;
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+            opacity: 0.8;
+        }
+
+        /* Vignette */
+        body::after {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: radial-gradient(circle, transparent 40%, rgba(0, 0, 0, 0.9) 100%);
+            pointer-events: none;
+            z-index: 21;
+        }
+        
+        .cyber-grid {
+            position: absolute;
+            bottom: 0; left: 0; right: 0; top: 0;
+            background-image: 
+                linear-gradient(rgba(0, 220, 229, 0.15) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 220, 229, 0.15) 1px, transparent 1px);
+            background-size: 40px 40px;
+            transform: perspective(600px) rotateX(60deg);
+            transform-origin: bottom center;
+            z-index: 1;
+            opacity: 0.4;
+        }
+
+        .crt-flicker {
+            animation: flicker 0.15s infinite;
+        }
+
+        @keyframes flicker {
+            0% { opacity: 0.95; }
+            50% { opacity: 1; }
+            100% { opacity: 0.95; }
+        }
+
+        .neon-border {
+            border: 1px solid theme('colors.primary-fixed-dim');
+        }
+        
+        .neon-glow-focus:focus-within {
+            border-color: theme('colors.primary-fixed');
+            box-shadow: 0 0 15px theme('colors.primary-fixed');
+            outline: none;
+        }
+
+        .terminal-input {
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid theme('colors.primary-fixed-dim');
+            color: theme('colors.primary');
+            outline: none;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .terminal-input:focus {
+            border-bottom-color: theme('colors.primary-fixed');
+            box-shadow: 0 5px 15px -5px theme('colors.primary-fixed');
+        }
+
+        @keyframes pulse-glow {
+            0% { box-shadow: 0 0 15px theme('colors.primary-fixed'), inset 0 0 5px rgba(255,255,255,0.5); }
+            50% { box-shadow: 0 0 35px theme('colors.primary-fixed'), inset 0 0 15px rgba(255,255,255,0.8); }
+            100% { box-shadow: 0 0 15px theme('colors.primary-fixed'), inset 0 0 5px rgba(255,255,255,0.5); }
+        }
+
+        .btn-primary {
+            border: 3px solid theme('colors.primary-fixed');
+            color: theme('colors.background');
+            background-color: theme('colors.primary-fixed');
+            text-transform: uppercase;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            animation: pulse-glow 2s infinite;
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.05) rotate(-1deg);
+            animation: none;
+            box-shadow: 0 0 40px theme('colors.primary-fixed'), inset 0 0 20px theme('colors.background');
+        }
+
+        .btn-secondary {
+            border: 2px solid theme('colors.secondary-container');
+            color: theme('colors.secondary-container');
+            background-color: transparent;
+            text-transform: uppercase;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 0 10px rgba(255, 77, 128, 0.3);
+        }
+
+        .btn-secondary:hover {
+            transform: scale(1.02) rotate(1deg);
+            box-shadow: 0 0 25px theme('colors.secondary-container');
+            background-color: rgba(255, 77, 128, 0.15);
+            text-shadow: 0 0 8px theme('colors.secondary-container');
+        }
+
+        .auth-card {
+            background-color: rgba(5, 5, 8, 0.85);
+            position: relative;
+            z-index: 10;
+            border-radius: 12px;
+        }
+        
+        .bezel {
+            position: absolute;
+            top: -16px; left: -16px; right: -16px; bottom: -16px;
+            border: 16px solid #080808;
+            border-radius: 24px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.9), inset 0 2px 10px rgba(255,255,255,0.05), inset 0 0 30px rgba(0,0,0,1);
+            z-index: -1;
+            pointer-events: none;
+        }
+        
+        .auth-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(99, 247, 255, 0.03) 2px,
+                rgba(99, 247, 255, 0.03) 4px
+            );
+            pointer-events: none;
+            border-radius: 12px;
+        }
+        
+        .tab-active {
+            color: theme('colors.primary-fixed');
+            border-bottom: 3px solid theme('colors.primary-fixed');
+            text-shadow: 0 0 10px theme('colors.primary-fixed');
+        }
+        .tab-inactive {
+            color: theme('colors.outline');
+            border-bottom: 3px solid transparent;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center relative overflow-hidden font-body-md text-body-md" style="background-color: rgb(5, 5, 8);">
+<div class="cyber-grid"></div>
+<!-- Ambient Background Glows -->
+<div class="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-primary-fixed rounded-full mix-blend-screen filter blur-[200px] opacity-10 pointer-events-none z-0"></div>
+<div class="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-secondary-container rounded-full mix-blend-screen filter blur-[200px] opacity-10 pointer-events-none z-0"></div>
+<main class="w-full max-w-lg px-margin z-10 relative mt-8 mb-8">
+<!-- Logo Area -->
+<div class="text-center mb-12 crt-flicker">
+<h1 class="font-display-lg text-display-lg text-primary-fixed drop-shadow-[0_0_20px_rgba(99,247,255,0.9)] tracking-tight">ARCADE VAULT</h1>
+<p class="font-label-lg text-label-lg tracking-widest mt-4 uppercase text-primary-fixed">Insert Coin to Continue</p>
+</div>
+<!-- Auth Card -->
+<div class="relative group transition-transform duration-300">
+<div class="auth-card neon-border shadow-[0_0_40px_rgba(0,220,229,0.2)] backdrop-blur-md p-10 sm:p-12">
+<div class="bezel"></div>
+<!-- Tabs -->
+<div class="flex mb-10 border-b border-outline-variant">
+<button class="flex-1 pb-4 text-center font-label-lg text-label-lg uppercase tab-active transition-colors text-white" id="tab-login">
+                    INICIAR SESIÓN
+                </button>
+<button class="flex-1 pb-4 text-center font-label-lg text-label-lg uppercase tab-inactive hover:text-primary-fixed hover:text-shadow-[0_0_10px_theme('colors.primary-fixed')] transition-all text-white" id="tab-register">
+                    CREAR CUENTA
+                </button>
+</div>
+<!-- Login Form -->
+<form class="space-y-8" id="form-login">
+<div class="relative group">
+<label class="block font-label-sm text-label-sm mb-2 uppercase text-primary-fixed" for="login-username">Usuario</label>
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-0 text-outline group-focus-within:text-primary-fixed transition-colors">person</span>
+<input autocomplete="off" class="terminal-input w-full pl-10 py-3 font-body-lg text-body-lg bg-surface-container-low text-primary-fixed" id="login-username" placeholder="PLAYER_1" required="" type="text">
+</div>
+</div>
+<div class="relative group">
+<label class="block font-label-sm text-label-sm mb-2 uppercase text-primary-fixed" for="login-password">Contraseña</label>
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-0 text-outline group-focus-within:text-primary-fixed transition-colors">lock</span>
+<input class="terminal-input w-full pl-10 py-3 font-body-lg text-body-lg bg-surface-container-low text-primary-fixed" id="login-password" placeholder="••••••••" required="" type="password">
+</div>
+</div>
+<div class="pt-6 space-y-4">
+<button class="btn-primary w-full py-4 font-headline-md text-headline-md flex items-center justify-center gap-3 border-2 border-primary-fixed shadow-[0_0_20px_theme('colors.primary-fixed')] brightness-125 text-white font-bold" type="submit">
+<span class="material-symbols-outlined text-2xl" data-weight="fill">play_arrow</span>
+                        INICIAR SESIÓN
+                    </button>
+<button class="btn-secondary w-full py-4 font-headline-md text-[14px] flex items-center justify-center gap-3 border-2 border-secondary-container shadow-[0_0_20px_theme('colors.secondary-container')] brightness-110 text-white font-bold" type="button">
+<span class="material-symbols-outlined text-xl">sports_esports</span>
+                        JUGAR COMO INVITADO
+                    </button>
+</div>
+<div class="text-center mt-6">
+<a class="font-label-sm text-label-sm hover:text-primary-fixed transition-colors underline decoration-dashed underline-offset-4 drop-shadow-[0_0_5px_theme('colors.tertiary-fixed')] text-primary-fixed brightness-125" href="#">¿Olvidaste tu contraseña?</a>
+</div>
+</form>
+<!-- Register Form (Hidden by default) -->
+<form class="space-y-8 hidden" id="form-register">
+<div class="relative group">
+<label class="block font-label-sm text-label-sm mb-2 uppercase text-primary-fixed" for="reg-email">Correo electrónico</label>
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-0 text-outline group-focus-within:text-primary-fixed transition-colors">mail</span>
+<input class="terminal-input w-full pl-10 py-3 font-body-lg text-body-lg bg-surface-container-low text-primary-fixed" id="reg-email" placeholder="player@arcade.net" type="email">
+</div>
+</div>
+<div class="relative group">
+<label class="block font-label-sm text-label-sm mb-2 uppercase text-primary-fixed" for="reg-username">Usuario</label>
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-0 text-outline group-focus-within:text-primary-fixed transition-colors">badge</span>
+<input class="terminal-input w-full pl-10 py-3 font-body-lg text-body-lg bg-surface-container-low text-primary-fixed" id="reg-username" placeholder="NEW_CHALLENGER" type="text">
+</div>
+</div>
+<div class="relative group">
+<label class="block font-label-sm text-label-sm mb-2 uppercase text-primary-fixed" for="reg-password">Contraseña</label>
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-0 text-outline group-focus-within:text-primary-fixed transition-colors">key</span>
+<input class="terminal-input w-full pl-10 py-3 font-body-lg text-body-lg bg-surface-container-low text-primary-fixed" id="reg-password" placeholder="••••••••" type="password">
+</div>
+</div>
+<div class="pt-6">
+<button class="btn-primary w-full py-4 font-headline-md text-headline-md flex items-center justify-center gap-3 border-2 border-primary-fixed shadow-[0_0_20px_theme('colors.primary-fixed')] brightness-125 text-white font-bold" type="submit">
+<span class="material-symbols-outlined text-2xl">add_circle</span>
+                        REGISTRAR
+                    </button>
+</div>
+</form>
+</div>
+</div>
+</main>
+<script>
+        // Tab switching logic
+        const tabLogin = document.getElementById('tab-login');
+        const tabRegister = document.getElementById('tab-register');
+        const formLogin = document.getElementById('form-login');
+        const formRegister = document.getElementById('form-register');
+
+        tabLogin.addEventListener('click', () => {
+            tabLogin.classList.replace('tab-inactive', 'tab-active');
+            tabRegister.classList.replace('tab-active', 'tab-inactive');
+            formLogin.classList.remove('hidden');
+            formRegister.classList.add('hidden');
+        });
+
+        tabRegister.addEventListener('click', () => {
+            tabRegister.classList.replace('tab-inactive', 'tab-active');
+            tabLogin.classList.replace('tab-active', 'tab-inactive');
+            formRegister.classList.remove('hidden');
+            formLogin.classList.add('hidden');
+        });
+        
+        // Add terminal cursor effect to active input
+        const inputs = document.querySelectorAll('.terminal-input');
+        inputs.forEach(input => {
+            input.addEventListener('focus', () => {
+                input.parentElement.parentElement.classList.add('neon-glow-focus');
+            });
+            input.addEventListener('blur', () => {
+                input.parentElement.parentElement.classList.remove('neon-glow-focus');
+            });
+        });
+    </script>
+
+
+</body></html>
