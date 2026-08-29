@@ -1,26 +1,474 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* =========================================================================
+   ARCADE VAULT — Tema global
+   Neon-Brutalist / 80s Retro-Future. Opera exclusivamente en modo oscuro.
+   Fuente de verdad: resources/arcade_vault/DESIGN.md
+   ========================================================================= */
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* ---- Superficies (el "gabinete" sobre el vacío) ---- */
+  --color-void: #0a0a0f;
+  --color-surface: #131318;
+  --color-surface-dim: #131318;
+  --color-surface-bright: #39383e;
+  --color-surface-container-lowest: #0e0e13;
+  --color-surface-container-low: #1b1b20;
+  --color-surface-container: #1f1f25;
+  --color-surface-container-high: #2a292f;
+  --color-surface-container-highest: #35343a;
+  --color-surface-variant: #35343a;
+
+  --color-on-surface: #e4e1e9;
+  --color-on-surface-variant: #b9caca;
+  --color-inverse-surface: #e4e1e9;
+  --color-inverse-on-surface: #303036;
+
+  --color-outline: #849495;
+  --color-outline-variant: #3a494a;
+  --color-surface-tint: #00dce5;
+
+  /* ---- Primario · Electric Cyan (JUGAR, estados activos, Player 1) ---- */
+  --color-primary: #e9feff;
+  --color-on-primary: #003739;
+  --color-primary-container: #00f5ff;
+  --color-on-primary-container: #006c71;
+  --color-inverse-primary: #00696e;
+  --color-primary-fixed: #63f7ff;
+  --color-primary-fixed-dim: #00dce5;
+  --color-on-primary-fixed: #002021;
+  --color-on-primary-fixed-variant: #004f53;
+
+  /* ---- Secundario · Hot Magenta (Player 2, alertas de récord, acentos) ---- */
+  --color-secondary: #ffb2bf;
+  --color-on-secondary: #660028;
+  --color-secondary-container: #ff4d80;
+  --color-on-secondary-container: #5a0022;
+  --color-secondary-fixed: #ffd9de;
+  --color-secondary-fixed-dim: #ffb2bf;
+  --color-on-secondary-fixed: #3f0016;
+  --color-on-secondary-fixed-variant: #90003b;
+
+  /* ---- Terciario · Acid Yellow (Salón de la Fama, moneda, ítems raros) ---- */
+  --color-tertiary: #fdffb5;
+  --color-on-tertiary: #303300;
+  --color-tertiary-container: #dee700;
+  --color-on-tertiary-container: #616600;
+  --color-tertiary-fixed: #e3ec00;
+  --color-tertiary-fixed-dim: #c7cf00;
+  --color-on-tertiary-fixed: #1c1d00;
+  --color-on-tertiary-fixed-variant: #474a00;
+
+  /* ---- Error ---- */
+  --color-error: #ffb4ab;
+  --color-on-error: #690005;
+  --color-error-container: #93000a;
+  --color-on-error-container: #ffdad6;
+
+  /* ---- Alias base ---- */
+  --color-background: #0a0a0f;
+  --color-on-background: #e4e1e9;
+
+  /* ---- Tipografía ---- */
+  --font-display: var(--font-anybody), "Arial Narrow", system-ui, sans-serif;
+  --font-body: var(--font-courier-prime), "Courier New", ui-monospace, monospace;
+  --font-mono: var(--font-courier-prime), "Courier New", ui-monospace, monospace;
+  --font-sans: var(--font-anybody), "Arial Narrow", system-ui, sans-serif;
+
+  /* Escala de tipo (roles del design system) */
+  --text-display-lg: 48px;
+  --text-display-lg--line-height: 1.1;
+  --text-display-lg--font-weight: 900;
+  --text-display-lg--letter-spacing: -0.02em;
+
+  --text-headline-lg: 32px;
+  --text-headline-lg--line-height: 1.2;
+  --text-headline-lg--font-weight: 800;
+
+  --text-headline-md: 24px;
+  --text-headline-md--line-height: 1.2;
+  --text-headline-md--font-weight: 700;
+
+  --text-body-lg: 18px;
+  --text-body-lg--line-height: 1.5;
+  --text-body-lg--font-weight: 400;
+
+  --text-body-md: 16px;
+  --text-body-md--line-height: 1.5;
+  --text-body-md--font-weight: 400;
+
+  --text-label-lg: 14px;
+  --text-label-lg--line-height: 1.2;
+  --text-label-lg--font-weight: 700;
+  --text-label-lg--letter-spacing: 0.1em;
+
+  --text-label-sm: 12px;
+  --text-label-sm--line-height: 1.2;
+  --text-label-sm--font-weight: 700;
+  --text-label-sm--letter-spacing: 0.1em;
+
+  /* ---- Layout & spacing (baseline de 4px) ---- */
+  --spacing-gutter: 24px;
+  --spacing-margin: 32px;
+  --container-arcade: 1280px;
+
+  /* ---- Formas: nivel Sharp (0). Sin redondeos, sin píldoras. ---- */
+  --radius-none: 0px;
+  --radius-xs: 0px;
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
+  --radius-2xl: 0px;
+  --radius-3xl: 0px;
+  --radius-full: 0px;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* -------------------------------------------------------------------------
+   Variables de runtime (glows, texturas). No pasan por @theme.
+   ------------------------------------------------------------------------- */
+:root {
+  color-scheme: dark;
+
+  /* Profundidad por luminancia y glow, no por sombras realistas */
+  --glow-primary: 0 0 10px rgba(0, 245, 255, 0.55), 0 0 22px rgba(0, 245, 255, 0.28);
+  --glow-primary-strong: 0 0 14px rgba(0, 245, 255, 0.75), 0 0 34px rgba(0, 245, 255, 0.4);
+  --glow-secondary: 0 0 10px rgba(255, 77, 128, 0.55), 0 0 22px rgba(255, 77, 128, 0.28);
+  --glow-secondary-strong: 0 0 14px rgba(255, 77, 128, 0.75), 0 0 34px rgba(255, 77, 128, 0.4);
+  --glow-tertiary: 0 0 10px rgba(222, 231, 0, 0.5), 0 0 22px rgba(222, 231, 0, 0.25);
+
+  --bloom-primary: 0 0 8px rgba(0, 245, 255, 0.45), 0 0 18px rgba(0, 245, 255, 0.2);
+  --bloom-secondary: 0 0 8px rgba(255, 77, 128, 0.45), 0 0 18px rgba(255, 77, 128, 0.2);
+
+  /* Chaflán a 45° para elementos HUD especializados */
+  --chamfer: 10px;
+}
+
+/* -------------------------------------------------------------------------
+   Base
+   ------------------------------------------------------------------------- */
+* {
+  border-color: var(--color-outline-variant);
+}
+
+html {
+  background: var(--color-void);
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  min-height: 100dvh;
+  background: var(--color-void);
+  color: var(--color-on-surface);
+  font-family: var(--font-body);
+  font-size: var(--text-body-md);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Encabezados: mayúsculas (sets de caracteres de máquinas de 8 bits) +
+   "bloom" en color primario. */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  text-shadow: var(--bloom-primary);
+}
+
+h1 {
+  font-size: var(--text-display-lg);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+}
+h2 {
+  font-size: var(--text-headline-lg);
+}
+h3 {
+  font-size: var(--text-headline-md);
+  font-weight: 700;
+}
+
+a {
+  color: var(--color-primary-container);
+  text-decoration: none;
+}
+a:hover {
+  text-shadow: var(--bloom-primary);
+}
+
+::selection {
+  background: var(--color-primary-container);
+  color: var(--color-on-primary);
+  text-shadow: none;
+}
+
+/* Cuerpo estrictamente monocromático (blanco o cian) sobre los scanlines */
+p,
+li,
+span,
+label,
+input,
+textarea,
+button {
+  font-family: var(--font-body);
+}
+
+/* Foco de teclado siempre visible */
+:focus-visible {
+  outline: 2px solid var(--color-primary-container);
+  outline-offset: 2px;
+}
+
+/* -------------------------------------------------------------------------
+   CRT FX — overlay global (scanlines + viñeta). Z-4 del design system.
+   Vive sobre la app pero nunca intercepta eventos.
+   ------------------------------------------------------------------------- */
+body::before,
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+}
+
+/* Patrón horizontal de scanlines */
+body::before {
+  background-image: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.28) 0px,
+    rgba(0, 0, 0, 0.28) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  mix-blend-mode: multiply;
+  opacity: 0.5;
+}
+
+/* Viñeta suave hacia las esquinas + tinte cian del fósforo */
+body::after {
+  background:
+    radial-gradient(ellipse at center, transparent 55%, rgba(0, 0, 0, 0.55) 100%),
+    radial-gradient(ellipse at center, rgba(0, 220, 229, 0.04), transparent 60%);
+}
+
+/* -------------------------------------------------------------------------
+   Animaciones
+   ------------------------------------------------------------------------- */
+@keyframes av-cursor-blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes av-glitch {
+  0%,
+  92%,
+  100% {
+    transform: translate(0, 0);
+  }
+  94% {
+    transform: translate(-1px, 0);
+  }
+  96% {
+    transform: translate(1px, 0);
+  }
+  98% {
+    transform: translate(-1px, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* -------------------------------------------------------------------------
+   Componentes base del design system
+   ------------------------------------------------------------------------- */
+@layer components {
+  /* ---- Botones ---- */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border: 2px solid var(--color-primary-container);
+    background: transparent;
+    color: var(--color-primary-container);
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: var(--text-label-lg);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: box-shadow 150ms ease, background-color 150ms ease, color 150ms ease;
+  }
+  .btn:hover {
+    box-shadow: var(--glow-primary-strong);
+    animation: av-glitch 1.6s steps(1) infinite;
+  }
+  .btn:active {
+    background: var(--color-primary-container);
+    color: var(--color-on-primary);
+  }
+
+  .btn-secondary {
+    border-color: var(--color-secondary-container);
+    color: var(--color-secondary-container);
+  }
+  .btn-secondary:hover {
+    box-shadow: var(--glow-secondary-strong);
+  }
+  .btn-secondary:active {
+    background: var(--color-secondary-container);
+    color: var(--color-on-secondary);
+  }
+
+  /* ---- Cards: fondo negro sólido, borde cian 1px, textura de scanline ---- */
+  .card {
+    position: relative;
+    background: var(--color-void);
+    border: 1px solid var(--color-primary-container);
+    padding: var(--spacing-gutter);
+    transition: box-shadow 200ms ease, transform 200ms ease;
+  }
+  .card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image: repeating-linear-gradient(
+      0deg,
+      rgba(0, 245, 255, 0.06) 0px,
+      rgba(0, 245, 255, 0.06) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+  }
+  .card:hover {
+    box-shadow: var(--glow-primary);
+  }
+
+  /* ---- Chips / Tags: caja rectangular, fondo cian, texto negro ---- */
+  .chip {
+    display: inline-block;
+    padding: 4px 8px;
+    background: var(--color-primary-container);
+    color: var(--color-on-primary);
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: var(--text-label-sm);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  /* ---- Input "terminal": sin fondo, solo borde inferior cian ---- */
+  .input-terminal {
+    width: 100%;
+    padding: 8px 0;
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid var(--color-primary-container);
+    color: var(--color-on-surface);
+    font-family: var(--font-body);
+    font-size: var(--text-body-md);
+    caret-color: var(--color-primary-container);
+  }
+  .input-terminal::placeholder {
+    color: var(--color-outline);
+  }
+  .input-terminal:focus {
+    outline: none;
+    box-shadow: 0 1px 0 0 var(--color-primary-container), var(--glow-primary);
+  }
+
+  /* Etiqueta sobre el input, en Acid Yellow */
+  .input-label {
+    display: block;
+    margin-bottom: 4px;
+    color: var(--color-tertiary-container);
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: var(--text-label-sm);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  /* Cursor de bloque parpadeante (500ms) */
+  .block-cursor::after {
+    content: "\2588";
+    display: inline-block;
+    margin-left: 2px;
+    color: var(--color-primary-container);
+    animation: av-cursor-blink 1s steps(1) infinite;
+  }
+
+  /* ---- Barra de progreso segmentada (carga bit-mapped) ---- */
+  .progress {
+    width: 100%;
+    height: 16px;
+    border: 1px solid var(--color-outline-variant);
+    background: var(--color-surface-container-lowest);
+  }
+  .progress__fill {
+    height: 100%;
+    background-image: repeating-linear-gradient(
+      90deg,
+      var(--color-tertiary-container) 0px,
+      var(--color-tertiary-container) 10px,
+      transparent 10px,
+      transparent 14px
+    );
+  }
+}
+
+/* -------------------------------------------------------------------------
+   Utilidades
+   ------------------------------------------------------------------------- */
+@utility chamfer {
+  /* Esquinas recortadas a 45° para elementos HUD especializados */
+  clip-path: polygon(
+    var(--chamfer) 0,
+    100% 0,
+    100% calc(100% - var(--chamfer)),
+    calc(100% - var(--chamfer)) 100%,
+    0 100%,
+    0 var(--chamfer)
+  );
+}
+
+@utility glow-primary {
+  box-shadow: var(--glow-primary);
+}
+@utility glow-secondary {
+  box-shadow: var(--glow-secondary);
+}
+@utility glow-tertiary {
+  box-shadow: var(--glow-tertiary);
+}
+@utility text-bloom {
+  text-shadow: var(--bloom-primary);
+}
+@utility text-bloom-secondary {
+  text-shadow: var(--bloom-secondary);
 }
