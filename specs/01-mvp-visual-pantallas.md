@@ -1,6 +1,6 @@
 # SPEC 01 — MVP visual: cinco pantallas de Arcade Vault
 
-> **Status:** Aprobado
+> **Status:** Implementado
 > **Depends on:** —
 > **Date:** 2026-08-31
 > **Objective:** Construir la parte visual de las cinco pantallas de `resources/` (acceso, biblioteca, detalle de juego, reproductor y salón de la fama) con App Router, datos mock y navegación real, sin autenticación, sin persistencia y sin motor de juego.
