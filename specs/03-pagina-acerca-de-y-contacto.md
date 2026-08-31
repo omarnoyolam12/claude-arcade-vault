@@ -1,6 +1,6 @@
 # SPEC 03 — Página "Acerca de" en `/acerca-de` con formulario de contacto que envía email vía Resend
 
-> **Status:** Aprobado
+> **Status:** Implementado
 > **Depends on:** SPEC 01, SPEC 02
 > **Date:** 2026-08-31
 > **Objective:** Construir la página `/acerca-de` (mockup `resources/about`) con su hero, fila de features y sección de contacto, y hacer que el formulario de contacto envíe un email de notificación al equipo mediante Resend a través de una Server Action.
