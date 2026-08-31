@@ -4,13 +4,14 @@ import Link from "next/link";
 import { useState } from "react";
 
 const LINKS = [
-  { href: "/", label: "Biblioteca", key: "biblioteca" },
+  { href: "/", label: "Inicio", key: "inicio" },
+  { href: "/juegos", label: "Biblioteca", key: "juegos" },
   { href: "/salon-de-la-fama", label: "Salón de la Fama", key: "salon" },
   { href: "/acceso", label: "Acceder", key: "acceso" },
 ] as const;
 
 type Props = {
-  active?: "biblioteca" | "salon";
+  active?: "inicio" | "juegos" | "salon";
 };
 
 /** Menú móvil: el botón hamburguesa abre y cierra la lista de enlaces. */
