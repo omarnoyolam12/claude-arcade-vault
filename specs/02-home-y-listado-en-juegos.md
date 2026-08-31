@@ -1,6 +1,6 @@
 # SPEC 02 — Página home en `/` y listado de juegos movido a `/juegos`
 
-> **Status:** Aprobado
+> **Status:** Implementado
 > **Depends on:** SPEC 01
 > **Date:** 2026-08-31
 > **Objective:** Construir la home de Arcade Vault en `/` (hero, beneficios, showcase de juegos, actividad en vivo y precios) con datos mock, y trasladar el listado de juegos actual de `/` a `/juegos` reapuntando la navegación.
@@ -11,9 +11,9 @@
 
 La SPEC 01 dejó el listado de juegos ("Biblioteca") en la raíz `/`. El producto necesita una portada real: una página de entrada que presente la plataforma, muestre por qué existe, adelante el catálogo y enseñe actividad reciente. Esta spec crea esa portada en `/` y empuja el listado a su URL semántica `/juegos`, sin tocar el resto de pantallas (`/acceso`, `/juegos/[slug]`, `/jugar/[slug]`, `/salon-de-la-fama`).
 
-El mockup de referencia es `resources/home/` (`code.html` + `screen.png`). Se porta su estructura, no su tipografía: el mockup abusa de "Press Start 2P" y esta spec mantiene la decisión de la SPEC 01 de usar solo **Anybody + Courier Prime**.
+El mockup de referencia es `resources/home/` (`code.html` + `screen.png`). Se porta su estructura y, de su tipografía, se recupera **"Press Start 2P" solo para el titular del Hero y para los rótulos `// NN` de las secciones de la home**; el resto de la interfaz sigue con **Anybody + Courier Prime** (decisión de la SPEC 01). Motivo: con Anybody el mensaje inicial no transmite el carácter arcade que pide el producto.
 
-**Regla de estilos (heredada de SPEC 01):** `app/globals.css` no se toca. Todo estilo adicional se resuelve con utilidades de Tailwind en el JSX, incluidos valores arbitrarios (`shadow-[...]`, `bg-[repeating-linear-gradient(...)]`). No se añaden reglas, clases ni `@layer` a `globals.css`, ni archivos CSS por pantalla.
+**Regla de estilos (heredada de SPEC 01):** `app/globals.css` no se toca. Todo estilo adicional se resuelve con utilidades de Tailwind en el JSX, incluidos valores arbitrarios (`shadow-[...]`, `bg-[repeating-linear-gradient(...)]`). No se añaden reglas, clases ni `@layer` a `globals.css`, ni archivos CSS por pantalla. **Única excepción:** el bloque `<style>` con las `@keyframes` de la animación de flotado vive dentro de `components/hero-backdrop.tsx` (no en `globals.css` ni en un CSS por pantalla).
 
 ---
 
@@ -22,7 +22,7 @@ El mockup de referencia es `resources/home/` (`code.html` + `screen.png`). Se po
 **In:**
 
 - Ruta `/` — **Home** (mockup `resources/home`). Cinco secciones, en este orden:
-  1. **Hero:** etiqueta "Inserta una moneda_", titular a tres líneas ("El arcade / clásico está / de vuelta"), subtítulo, y dos CTAs: "Explorar juegos" → `/juegos` y "Crear cuenta" → `/acceso`. Los adornos geométricos flotantes del mockup se recrean con divs y `animate-[...]` de Tailwind (o se omiten si complican; son decorativos).
+  1. **Hero:** etiqueta "Inserta una moneda_", titular a tres líneas ("El arcade / clásico está / de vuelta") en **"Press Start 2P"**, subtítulo, y dos CTAs: "Explorar juegos" → `/juegos` y "Crear cuenta" → `/acceso`. Fondo de la sección: figuras SVG que aluden a juegos retro (fantasma, invasor, tetromino, bola + ladrillo, asteroide) posicionadas en absoluto, con baja opacidad y glow, flotando con animación (`components/hero-backdrop.tsx`). El fondo no captura clics (`pointer-events-none`) y queda por detrás del contenido (`-z-10`).
   2. **¿Por qué Arcade Vault?:** grid de 4 tarjetas estáticas (juegos clásicos, 100% gratis, ranking global, siempre creciendo) con su icono, título y texto. Contenido literal del mockup, tipografía del design system.
   3. **Juegos disponibles ahora:** grid de 6 miniaturas leídas de `lib/games.ts` mediante el nuevo `components/game-thumb.tsx` (`next/image` + enlace a `/juegos/[slug]`), más un botón "Ver todos los juegos" → `/juegos`.
   4. **Actividad en vivo:** barra de 3 stats estáticas (`12+ juegos`, `miles de partidas`, `ranking global`), columna "Últimas puntuaciones" (feed de `lib/activity.ts`) y columna "Top jugadores — hoy" (lista de `lib/activity.ts`) con enlace "Ver salón" → `/salon-de-la-fama`.
@@ -30,7 +30,9 @@ El mockup de referencia es `resources/home/` (`code.html` + `screen.png`). Se po
 - Ruta `/juegos` — **Listado de juegos**: el contenido íntegro del actual `app/page.tsx` (fondo shader, hero "Inserta una moneda para jugar", barra de búsqueda visual, grid de 6 `GameCard`), movido tal cual salvo el prop `active` del header.
 - `components/vault-mark.tsx` — nuevo. Logo compuesto (rombo de neón cian + palabra "ARCADE VAULT" en Anybody) tomado del nav del mockup de home. Reemplaza el logo de solo texto actual en `SiteHeader` y `SiteFooter`.
 - `components/game-thumb.tsx` — nuevo. Miniatura cuadrada compacta de un juego para el showcase de la home.
+- `components/hero-backdrop.tsx` — nuevo. Fondo decorativo del Hero: figuras SVG retro flotantes; incluye el `<style>` con sus `@keyframes`.
 - `lib/activity.ts` — nuevo. Datos mock de actividad reciente.
+- `app/layout.tsx` — carga "Press Start 2P" con `next/font/google` y expone la CSS var `--font-press-start` en `<html>`. Se consume con `style={{ fontFamily: "var(--font-press-start), …" }}` inline (las reglas de elemento sin capa de `globals.css` —`h1{}`, `span{}`— ganan a una utilidad de Tailwind, así que la clase no sirve aquí), sin añadir token a `globals.css`. Se usa solo en el titular del Hero y en los rótulos `// NN` de la home.
 - Cambios de navegación en `components/site-header.tsx` y `components/mobile-nav.tsx`:
   - Nuevo enlace "Inicio" → `/`.
   - "Biblioteca" pasa a apuntar a `/juegos` (antes `/`).
@@ -110,7 +112,11 @@ Convenciones (heredadas de SPEC 01):
 
 9. **Home — precios.** Añadir la sección con la tarjeta "Jugador Vault" ($0), su lista de ventajas con checks, el badge "Free Play" y el CTA "Empezar gratis" → `/acceso`, junto al bloque de 3 preguntas frecuentes. Contenido literal del mockup.
 
-10. **Cierre.** `npm run lint` y `npm run build` verdes. Recorrer manualmente `/`, `/juegos`, `/acceso`, `/juegos/pac-man`, `/jugar/pac-man`, `/salon-de-la-fama` y un slug inexistente. Si `next dev` regeneró `AGENTS.md`, commitearlo junto con el trabajo.
+10. **Fuente "Press Start 2P".** Cargarla en `app/layout.tsx` con `next/font/google` (`weight: "400"`, `subsets: ["latin"]`, `variable: "--font-press-start"`, `display: "swap"`) y añadir su `.variable` a la `className` del `<html>`. Aplicarla con `style={{ fontFamily: "var(--font-press-start), var(--font-anybody), monospace" }}` inline al `<h1>` del Hero, a sus tres `<span>` de línea y a los `<span>` de rótulo `// NN` de las cinco secciones (la utilidad de Tailwind no gana a las reglas `h1{}`/`span{}` sin capa de `globals.css`). Ajustar el tamaño/tracking del `<h1>` porque Press Start 2P rinde bastante más grande y ancho que Anybody. `app/globals.css` no se toca. `npm run lint` y `npm run build` verdes.
+
+11. **Fondo del Hero.** Crear `components/hero-backdrop.tsx`: 5–6 figuras SVG que aluden a juegos retro (fantasma, invasor, tetromino, bola + ladrillo, asteroide, moneda), posicionadas en absoluto dentro del contenedor, con baja opacidad y glow de color, cada una flotando con `animation` (duraciones y delays distintos). Las `@keyframes` (`hb-float`) van en un único `<style>` dentro del propio componente. Montarlo como primer hijo de la `<section>` del Hero (que ya es `relative`), con `-z-10`, `overflow-hidden` y `pointer-events-none`. Verificar que el titular y los CTAs siguen encima y son clicables.
+
+12. **Cierre.** `npm run lint` y `npm run build` verdes. Recorrer manualmente `/`, `/juegos`, `/acceso`, `/juegos/pac-man`, `/jugar/pac-man`, `/salon-de-la-fama` y un slug inexistente. Si `next dev` regeneró `AGENTS.md`, commitearlo junto con el trabajo.
 
 ---
 
@@ -133,8 +139,10 @@ Convenciones (heredadas de SPEC 01):
 - [ ] Los CTAs "Explorar juegos" y "Ver todos los juegos" apuntan a `/juegos`; "Crear cuenta" y "Empezar gratis" apuntan a `/acceso`; "Ver salón" apunta a `/salon-de-la-fama`.
 - [ ] La sección "Actividad en vivo" muestra 5 filas de últimas puntuaciones y 4 de top jugadores, todas leídas de `lib/activity.ts`.
 - [ ] Las imágenes remotas de `lh3.googleusercontent.com` cargan vía `next/image` (sin cambios en `next.config.ts`).
-- [ ] No se ha añadido la fuente "Press Start 2P" al proyecto; la home usa Anybody + Courier Prime.
-- [ ] `app/globals.css` no tiene reglas nuevas respecto al estado actual; todo estilo adicional son utilidades Tailwind en el JSX.
+- [ ] La fuente "Press Start 2P" se carga vía `next/font` y se usa **solo** en el titular del Hero y en los rótulos `// NN` de la home; ningún otro texto (ni de la home ni de otras pantallas) la usa.
+- [ ] El titular del Hero se lee correctamente con acentos ("Está") en Press Start 2P o su fallback declarado.
+- [ ] La sección Hero tiene un fondo de figuras retro (`components/hero-backdrop.tsx`) que flotan con animación, no capturan clics (`pointer-events-none`) y quedan por detrás del titular y los CTAs.
+- [ ] `app/globals.css` no tiene reglas nuevas respecto al estado actual; todo estilo adicional son utilidades Tailwind en el JSX, salvo el bloque `<style>` de `@keyframes` embebido en `components/hero-backdrop.tsx`.
 - [ ] Todo el texto de interfaz está en español con acentos correctos y los titulares en mayúsculas.
 - [ ] No existe código de autenticación, persistencia ni motor de juego en el repositorio.
 
@@ -149,7 +157,11 @@ Convenciones (heredadas de SPEC 01):
 - **No:** derivar la actividad de `leaderboards.ts` ni ponerla inline. Un archivo mock dedicado es más realista y reutilizable.
 - **Sí:** miniatura propia (`game-thumb.tsx`) para el showcase, con datos reales y `next/image`.
 - **No:** reusar `GameCard` (demasiado alto para el showcase) ni copiar los placeholders CSS del mockup (ya hay imágenes reales).
-- **Sí:** mantener Anybody + Courier Prime, ignorando "Press Start 2P" del mockup. Coherencia con SPEC 01.
+- **Sí:** recuperar "Press Start 2P" para el titular del Hero y los rótulos `// NN` de la home. El usuario lo pidió: con Anybody el mensaje inicial no proyecta el carácter arcade. Revierte de forma acotada la decisión de la SPEC 01.
+- **No:** "Press Start 2P" en el resto de titulares ni en otras pantallas. Sigue siendo la excepción, no la norma; Anybody + Courier Prime continúan como base.
+- **Sí:** cargar la fuente con `next/font/google` y aplicarla por `style` inline, para no añadir un token de fuente a `globals.css`. Se descartó la utilidad `font-[family-name:…]`: las reglas de elemento sin `@layer` de `globals.css` (`h1{}`, `span{}`) ganan en la cascada a las utilidades de Tailwind y la anulaban.
+- **Sí:** fondo del Hero con figuras SVG de juegos retro flotando; sus `@keyframes` van en un `<style>` dentro de `components/hero-backdrop.tsx`.
+- **No:** usar `ShaderBackground` (WebGL) ni un cyber-grid CSS como fondo del Hero. El usuario quiere figuras retro flotantes, no un shader ni una rejilla.
 - **Sí:** nuevo logo compuesto (rombo + palabra) en `components/vault-mark.tsx`, aplicado a `SiteHeader` y `SiteFooter`. El usuario prefiere el logo del mockup de home al de solo texto actual.
 - **No:** aplicar el logo nuevo solo en la home. Es un componente compartido; se cambia en los dos sitios para no tener dos marcas.
 - **Sí:** añadir enlace "Inicio" al nav además de "Biblioteca".
@@ -165,6 +177,7 @@ Convenciones (heredadas de SPEC 01):
 - `SiteHeader active="biblioteca"` → el valor pasa a `"juegos"` y la home usa `active="inicio"`.
 - "En `/juegos/pac-man` el header usa la variante back (logo + botón Volver al vault)" → sigue vigente, pero el botón lleva a `/juegos` en vez de a `/`.
 - El logo "de solo texto" implícito en SPEC 01 se sustituye por `components/vault-mark.tsx`.
+- "Se ignora Press Start 2P que aparece en algún mockup" → se recupera de forma acotada para el titular del Hero y los rótulos `// NN` de la home.
 
 ---
 
@@ -174,9 +187,11 @@ Convenciones (heredadas de SPEC 01):
 | --- | --- |
 | Enlaces internos a `/` que en realidad querían el listado quedan apuntando a la home tras el movimiento. | El paso 4 recorre header, mobile-nav y variante `back`; los criterios de aceptación fijan cada destino (`/juegos` vs `/`). |
 | Cambiar el union de `active` rompe el build por un valor viejo (`"biblioteca"`) sin actualizar. | El paso 4 actualiza header, mobile-nav y las páginas que pasan el prop en el mismo commit; `npm run build` valida los tipos. |
-| El logo nuevo en el componente compartido descuadra el layout del header/footer en las otras cuatro pantallas. | Pasos 2 y 10 exigen recorrer las cinco pantallas; `vault-mark` respeta la altura fija `h-20` del header. |
+| El logo nuevo en el componente compartido descuadra el layout del header/footer en las otras cuatro pantallas. | Pasos 2 y 12 exigen recorrer las cinco pantallas; `vault-mark` respeta la altura fija `h-20` del header. |
 | Las URLs de `lh3.googleusercontent.com` del showcase pueden caducar (mismo riesgo que SPEC 01). | `alt` descriptivo y contenedor con fondo sólido; migración a `/public` en otra spec si ocurre. |
-| `next dev` reescribe `AGENTS.md` y deja el árbol sucio. | Commitear el `AGENTS.md` regenerado junto con el trabajo (paso 10). |
+| Press Start 2P tiene cobertura de glifos limitada; algún acento del titular ("Está") podría no existir en la fuente. | Fallback declarado en la misma clase (`font-[...] , Anybody`); el paso 12 verifica el titular con acentos. |
+| El fondo animado del Hero puede molestar o consumir CPU. | Figuras SVG ligeras; el `@media (prefers-reduced-motion: reduce)` global ya neutraliza la animación; `pointer-events-none` evita que interfiera. |
+| `next dev` reescribe `AGENTS.md` y deja el árbol sucio. | Commitear el `AGENTS.md` regenerado junto con el trabajo (paso 12). |
 
 ---
 

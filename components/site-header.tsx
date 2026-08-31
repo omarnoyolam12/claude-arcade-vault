@@ -1,10 +1,11 @@
 import Link from "next/link";
 
 import { MobileNav } from "./mobile-nav";
+import { VaultMark } from "./vault-mark";
 
 type Props = {
   /** Marca el enlace de nav activo (solo en la variante "nav"). */
-  active?: "biblioteca" | "salon";
+  active?: "inicio" | "juegos" | "salon";
   /** "nav" (por defecto): logo + navegación. "back": logo + "Volver al vault". */
   variant?: "nav" | "back";
 };
@@ -22,16 +23,13 @@ function navLinkClass(isActive: boolean) {
 export function SiteHeader({ active, variant = "nav" }: Props) {
   return (
     <header className="fixed left-0 top-0 z-50 flex h-20 w-full items-center justify-between border-b-2 border-primary-fixed-dim bg-background px-margin shadow-[0_0_20px_rgba(0,220,229,0.4)]">
-      <Link
-        href="/"
-        className="font-display text-display-lg uppercase text-primary-fixed drop-shadow-[0_0_10px_rgba(99,247,255,0.8)]"
-      >
-        Arcade Vault
+      <Link href="/" className="transition-all hover:drop-shadow-[0_0_10px_#63f7ff]">
+        <VaultMark size="md" />
       </Link>
 
       {variant === "back" ? (
         <Link
-          href="/"
+          href="/juegos"
           className="flex items-center gap-2 border-2 border-secondary-container px-6 py-2 font-body text-body-lg uppercase text-secondary-container shadow-[0_0_15px_rgba(255,77,128,0.4)] transition-colors hover:bg-secondary-container hover:text-background"
         >
           <svg
@@ -53,7 +51,10 @@ export function SiteHeader({ active, variant = "nav" }: Props) {
       ) : (
         <>
           <nav className="hidden gap-gutter md:flex">
-            <Link href="/" className={navLinkClass(active === "biblioteca")}>
+            <Link href="/" className={navLinkClass(active === "inicio")}>
+              Inicio
+            </Link>
+            <Link href="/juegos" className={navLinkClass(active === "juegos")}>
               Biblioteca
             </Link>
             <Link
