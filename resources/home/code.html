@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ARCADE VAULT - Inicio</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&amp;family=Anybody:ital,wght@0,100..900;1,100..900&amp;family=Press+Start+2P&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-dim": "#131318",
+                        "surface-container-lowest": "#0e0e13",
+                        "on-error-container": "#ffdad6",
+                        "on-primary": "#003739",
+                        "surface": "#131318",
+                        "secondary-fixed-dim": "#ffb2bf",
+                        "primary-fixed": "#63f7ff",
+                        "inverse-on-surface": "#303036",
+                        "on-secondary-fixed-variant": "#90003b",
+                        "inverse-primary": "#00696e",
+                        "on-primary-fixed-variant": "#004f53",
+                        "surface-variant": "#35343a",
+                        "on-surface": "#e4e1e9",
+                        "on-error": "#690005",
+                        "outline-variant": "#3a494a",
+                        "inverse-surface": "#e4e1e9",
+                        "tertiary-container": "#dee700",
+                        "on-tertiary-container": "#616600",
+                        "on-primary-container": "#006c71",
+                        "surface-bright": "#39383e",
+                        "primary": "#e9feff",
+                        "surface-container-high": "#2a292f",
+                        "secondary-container": "#ff4d80",
+                        "on-secondary": "#660028",
+                        "surface-container": "#1f1f25",
+                        "secondary-fixed": "#ffd9de",
+                        "surface-container-highest": "#35343a",
+                        "error": "#ffb4ab",
+                        "on-tertiary": "#303300",
+                        "on-background": "#e4e1e9",
+                        "background": "#131318",
+                        "surface-tint": "#00dce5",
+                        "secondary": "#ffb2bf",
+                        "on-primary-fixed": "#002021",
+                        "primary-fixed-dim": "#00dce5",
+                        "error-container": "#93000a",
+                        "on-tertiary-fixed": "#1c1d00",
+                        "on-secondary-fixed": "#3f0016",
+                        "outline": "#849495",
+                        "tertiary": "#fdffb5",
+                        "on-tertiary-fixed-variant": "#474a00",
+                        "surface-container-low": "#1b1b20",
+                        "tertiary-fixed": "#e3ec00",
+                        "on-surface-variant": "#b9caca",
+                        "on-secondary-container": "#5a0022",
+                        "primary-container": "#00f5ff",
+                        "tertiary-fixed-dim": "#c7cf00"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "24px",
+                        "unit": "4px",
+                        "container-max": "1280px",
+                        "margin": "32px"
+                    },
+                    "fontFamily": {
+                        "label-sm": ["courierPrime"],
+                        "body-lg": ["courierPrime"],
+                        "body-md": ["courierPrime"],
+                        "display-lg": ["anybody"],
+                        "headline-lg": ["anybody"],
+                        "label-lg": ["courierPrime"],
+                        "headline-md": ["anybody"],
+                        "pixel": ["'Press Start 2P'", "cursive"]
+                    },
+                    "fontSize": {
+                        "label-sm": ["12px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "body-md": ["16px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "display-lg": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "900" }],
+                        "headline-lg": ["32px", { "lineHeight": "1.2", "fontWeight": "800" }],
+                        "label-lg": ["14px", { "lineHeight": "1.2", "letterSpacing": "0.1em", "fontWeight": "700" }],
+                        "headline-md": ["24px", { "lineHeight": "1.2", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: #0a0a0f; /* Deep black void */
+        }
+        
+        /* CRT Scanline Overlay */
+        body::after {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background-size: 100% 4px, 3px 100%;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.15;
+        }
+
+        /* Glitch Animation */
+        @keyframes glitch-anim {
+            0% { clip-path: inset(80% 0 0 0); transform: translate(-2px, 2px); }
+            10% { clip-path: inset(10% 0 60% 0); transform: translate(2px, -2px); }
+            20% { clip-path: inset(30% 0 20% 0); transform: translate(-2px, 2px); }
+            30% { clip-path: inset(70% 0 10% 0); transform: translate(2px, -2px); }
+            40% { clip-path: inset(20% 0 80% 0); transform: translate(-2px, 2px); }
+            50% { clip-path: inset(90% 0 5% 0); transform: translate(2px, -2px); }
+            60% { clip-path: inset(5% 0 90% 0); transform: translate(-2px, 2px); }
+            70% { clip-path: inset(40% 0 40% 0); transform: translate(2px, -2px); }
+            80% { clip-path: inset(60% 0 10% 0); transform: translate(-2px, 2px); }
+            90% { clip-path: inset(15% 0 75% 0); transform: translate(2px, -2px); }
+            100% { clip-path: inset(85% 0 5% 0); transform: translate(-2px, 2px); }
+        }
+
+        .hover-glitch:hover::before {
+            content: attr(data-text);
+            position: absolute;
+            left: 0;
+            text-shadow: 2px 0 #00dce5, -2px 0 #ffb2bf;
+            background: transparent;
+            overflow: hidden;
+            clip-path: inset(0 0 0 0);
+            animation: glitch-anim 0.5s infinite linear alternate-reverse;
+        }
+
+        /* Pixel Text Shadows */
+        .text-neon-cyan {
+            text-shadow: 0 0 10px rgba(0, 220, 229, 0.8), 0 0 20px rgba(0, 220, 229, 0.4);
+        }
+        .text-neon-magenta {
+            text-shadow: 0 0 10px rgba(255, 77, 128, 0.8), 0 0 20px rgba(255, 77, 128, 0.4);
+        }
+        .text-neon-yellow {
+            text-shadow: 0 0 10px rgba(222, 231, 0, 0.8), 0 0 20px rgba(222, 231, 0, 0.4);
+        }
+
+        /* Floating Geometrics */
+        @keyframes float-slow {
+            0% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+            100% { transform: translateY(0) rotate(360deg); }
+        }
+        .bg-float-1 { animation: float-slow 15s infinite ease-in-out; }
+        .bg-float-2 { animation: float-slow 20s infinite ease-in-out reverse; }
+        .bg-float-3 { animation: float-slow 25s infinite ease-in-out; }
+
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col font-body-md overflow-x-hidden selection:bg-primary-container selection:text-on-primary-container relative">
+<!-- TopNavBar -->
+<nav class="flex justify-between items-center w-full px-gutter py-4 sticky top-0 z-50 bg-opacity-90 backdrop-blur-md bg-surface border-b border-surface-variant">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 bg-primary transform rotate-45 border-2 border-surface flex items-center justify-center shadow-[0_0_8px_rgba(0,220,229,0.8)]"></div>
+<div class="font-pixel text-[12px] text-primary tracking-tighter">ARCADE VAULT</div>
+</div>
+<ul class="hidden md:flex items-center gap-6 font-pixel text-[10px] text-on-surface-variant uppercase">
+<li><a class="hover:text-primary transition-colors border-b-2 border-primary pb-1" href="#">Inicio</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Biblioteca</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Salón de la Fama</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Acerca de</a></li>
+</ul>
+<div class="flex items-center gap-6">
+<div class="hidden md:flex items-center gap-2 font-pixel text-[10px] text-tertiary-container">
+<div class="w-3 h-3 rounded-full bg-tertiary-container animate-pulse shadow-[0_0_8px_rgba(222,231,0,0.8)]"></div>
+                CRÉDITOS - 03
+            </div>
+<button class="border border-primary text-primary px-4 py-2 font-pixel text-[10px] hover:bg-primary/10 transition-all">
+                Iniciar Sesión
+            </button>
+</div>
+</nav>
+<main class="flex-grow w-full max-w-container-max mx-auto px-margin relative z-10 flex flex-col gap-24 py-16">
+<!-- 1. Hero Section -->
+<section class="flex flex-col items-center justify-center text-center relative min-h-[60vh]">
+<div class="absolute inset-0 overflow-hidden pointer-events-none -z-10">
+<div class="absolute top-10 left-20 w-8 h-8 text-primary opacity-50 bg-float-1"><span class="material-symbols-outlined text-4xl">cruelty_free</span></div>
+<div class="absolute top-40 right-32 w-10 h-10 text-secondary-container opacity-50 bg-float-2"><span class="material-symbols-outlined text-5xl">smart_toy</span></div>
+<div class="absolute bottom-20 left-1/4 w-8 h-8 text-tertiary-container opacity-50 bg-float-3"><span class="material-symbols-outlined text-4xl">favorite</span></div>
+<div class="absolute top-1/4 left-3/4 w-6 h-6 text-primary opacity-40 bg-float-1" style="animation-delay: -5s;"><span class="material-symbols-outlined text-3xl">gamepad</span></div>
+</div>
+<div class="font-pixel text-[10px] text-tertiary-container mb-8 flex items-center gap-2">
+<span class="w-1 h-1 bg-tertiary-container"></span>
+                INSERTA UNA MONEDA_
+            </div>
+<h1 class="font-pixel text-[32px] md:text-[64px] leading-tight mb-8">
+<span class="text-white block">EL ARCADE</span>
+<span class="text-primary text-neon-cyan block">CLÁSICO ESTÁ</span>
+<span class="text-secondary-container text-neon-magenta block">DE VUELTA</span>
+</h1>
+<p class="font-body-md text-on-surface-variant max-w-xl mx-auto mb-10">
+                Juega los mejores clásicos directamente en tu navegador.<br/>
+                Sin descargas. Sin costo. Solo diversión.
+            </p>
+<div class="flex flex-col sm:flex-row gap-4">
+<button class="border border-primary text-primary px-8 py-3 font-pixel text-[12px] flex items-center gap-2 hover:bg-primary/10 hover:shadow-[0_0_15px_rgba(0,220,229,0.4)] transition-all">
+<span>▶</span> EXPLORAR JUEGOS
+                </button>
+<button class="border border-secondary-container text-secondary-container px-8 py-3 font-pixel text-[12px] flex items-center gap-2 hover:bg-secondary-container/10 hover:shadow-[0_0_15px_rgba(255,77,128,0.4)] transition-all">
+<span class="w-2 h-2 bg-secondary-container"></span> CREAR CUENTA
+                </button>
+</div>
+</section>
+<!-- 2. ¿Por qué Arcade Vault? -->
+<section class="w-full">
+<h2 class="font-pixel text-[16px] text-white mb-10 flex items-center gap-4">
+<span class="text-secondary-container">// 01</span> ¿POR QUÉ ARCADE VAULT?
+            </h2>
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+<!-- Card 1 -->
+<div class="border border-surface-variant bg-surface-container-low p-6 hover:border-primary/50 transition-colors">
+<span class="material-symbols-outlined text-primary text-4xl mb-4 text-neon-cyan">sports_esports</span>
+<h3 class="font-pixel text-[10px] text-primary mb-3">JUEGOS CLÁSICOS</h3>
+<p class="font-body-sm text-sm text-on-surface-variant">Arkanoid, Tetris, Snake y muchos más. Los mejores arcades de todos los tiempos en un solo lugar.</p>
+</div>
+<!-- Card 2 -->
+<div class="border border-surface-variant bg-surface-container-low p-6 hover:border-tertiary-container/50 transition-colors">
+<span class="material-symbols-outlined text-tertiary-container text-4xl mb-4 text-neon-yellow">monetization_on</span>
+<h3 class="font-pixel text-[10px] text-tertiary-container mb-3">100% GRATIS</h3>
+<p class="font-body-sm text-sm text-on-surface-variant">Sin suscripciones, sin pagos ocultos. Todos los juegos disponibles de forma gratuita.</p>
+</div>
+<!-- Card 3 -->
+<div class="border border-surface-variant bg-surface-container-low p-6 hover:border-secondary-container/50 transition-colors">
+<span class="material-symbols-outlined text-secondary-container text-4xl mb-4 text-neon-magenta">emoji_events</span>
+<h3 class="font-pixel text-[10px] text-secondary-container mb-3">RANKING GLOBAL</h3>
+<p class="font-body-sm text-sm text-on-surface-variant">Compite con jugadores de todo el mundo. Escala el ranking y demuestra quién es el mejor.</p>
+</div>
+<!-- Card 4 -->
+<div class="border border-surface-variant bg-surface-container-low p-6 hover:border-primary/50 transition-colors">
+<span class="material-symbols-outlined text-primary text-4xl mb-4 text-neon-cyan">rocket_launch</span>
+<h3 class="font-pixel text-[10px] text-primary mb-3">SIEMPRE CRECIENDO</h3>
+<p class="font-body-sm text-sm text-on-surface-variant">Agregamos nuevos juegos constantemente. Vuelve seguido, siempre habrá algo nuevo que jugar.</p>
+</div>
+</div>
+</section>
+<!-- 3. Juegos Disponibles Ahora -->
+<section class="w-full">
+<h2 class="font-pixel text-[16px] text-white mb-10 flex items-center gap-4">
+<span class="text-primary">// 02</span> JUEGOS DISPONIBLES AHORA
+            </h2>
+<div class="grid grid-cols-2 md:grid-cols-6 gap-4 mb-8">
+<!-- Game Thumbnails (Placeholders imitating the screenshot) -->
+<div class="aspect-square bg-surface-container border border-surface-variant hover:border-primary transition-all relative group cursor-pointer overflow-hidden">
+<div class="absolute inset-0 bg-gradient-to-br from-red-500 via-yellow-500 to-purple-500 opacity-80 flex flex-wrap"><div class="w-1/4 h-full bg-red-500"></div><div class="w-1/4 h-full bg-green-500"></div><div class="w-1/4 h-full bg-orange-500"></div><div class="w-1/4 h-full bg-pink-500"></div></div>
+<div class="absolute bottom-0 left-0 right-0 p-2 bg-black/80">
+<div class="font-pixel text-[8px] text-white">BLOQUE BUSTER</div>
+<div class="text-[8px] text-on-surface-variant uppercase">Arcade</div>
+</div>
+</div>
+<div class="aspect-square bg-surface-container border border-surface-variant hover:border-primary transition-all relative group cursor-pointer overflow-hidden">
+<div class="absolute inset-0 bg-[#2b1055] flex items-center justify-center"><div class="w-8 h-20 bg-cyan-400 absolute ml-4 -mt-4"></div><div class="w-8 h-12 bg-yellow-400 absolute -ml-4 mt-8"></div><div class="w-8 h-8 bg-purple-500 absolute -ml-4 mt-24"></div></div>
+<div class="absolute bottom-0 left-0 right-0 p-2 bg-black/80">
+<div class="font-pixel text-[8px] text-white">CAÍDA</div>
+<div class="text-[8px] text-on-surface-variant uppercase">Puzzle</div>
+</div>
+</div>
+<div class="aspect-square bg-surface-container border border-surface-variant hover:border-primary transition-all relative group cursor-pointer overflow-hidden">
+<div class="absolute inset-0 bg-[#0d2a1b] flex items-center justify-center"><div class="w-full h-2 bg-green-500 opacity-50"></div></div>
+<div class="absolute bottom-0 left-0 right-0 p-2 bg-black/80">
+<div class="font-pixel text-[8px] text-white">SERPENTINA</div>
+<div class="text-[8px] text-on-surface-variant uppercase">Arcade</div>
+</div>
+</div>
+<div class="aspect-square bg-surface-container border border-surface-variant hover:border-primary transition-all relative group cursor-pointer overflow-hidden">
+<div class="absolute inset-0 bg-[#1a0f2e] flex items-center justify-center"><div class="w-12 h-12 rounded-full border-l-4 border-t-4 border-b-4 border-yellow-400"></div><div class="w-2 h-2 bg-cyan-400 rounded-full ml-4"></div><div class="w-2 h-2 bg-pink-400 rounded-full ml-4"></div></div>
+<div class="absolute bottom-0 left-0 right-0 p-2 bg-black/80">
+<div class="font-pixel text-[8px] text-white">GLOTÓN</div>
+<div class="text-[8px] text-on-surface-variant uppercase">Arcade</div>
+</div>
+</div>
+<div class="aspect-square bg-surface-container border border-surface-variant hover:border-primary transition-all relative group cursor-pointer overflow-hidden">
+<div class="absolute inset-0 bg-[#0f1b29] flex flex-col items-center justify-center gap-2"><div class="flex gap-2"><div class="w-2 h-2 bg-cyan-400"></div><div class="w-2 h-2 bg-cyan-400"></div><div class="w-2 h-2 bg-cyan-400"></div></div><div class="flex gap-2"><div class="w-2 h-2 bg-red-500"></div><div class="w-2 h-2 bg-red-500"></div><div class="w-2 h-2 bg-red-500"></div></div></div>
+<div class="absolute bottom-0 left-0 right-0 p-2 bg-black/80">
+<div class="font-pixel text-[8px] text-white">INVASORES</div>
+<div class="text-[8px] text-on-surface-variant uppercase">Shooter</div>
+</div>
+</div>
+<div class="aspect-square bg-surface-container border border-surface-variant hover:border-primary transition-all relative group cursor-pointer overflow-hidden">
+<div class="absolute inset-0 bg-[#121212] flex items-center justify-center"><div class="w-16 h-16 rounded-full bg-gray-300 absolute top-4 left-4"></div><div class="w-10 h-10 rounded-full bg-gray-400 absolute bottom-8 right-8"></div><div class="w-4 h-4 bg-yellow-400 transform rotate-45"></div></div>
+<div class="absolute bottom-0 left-0 right-0 p-2 bg-black/80">
+<div class="font-pixel text-[8px] text-white">ROCAS</div>
+<div class="text-[8px] text-on-surface-variant uppercase">Shooter</div>
+</div>
+</div>
+</div>
+<div class="flex justify-center">
+<button class="border border-primary text-white px-8 py-3 font-pixel text-[10px] flex items-center gap-2 hover:bg-primary/10 transition-all">
+                    VER TODOS LOS JUEGOS →
+                </button>
+</div>
+</section>
+<!-- 4. Actividad en Vivo -->
+<section class="w-full">
+<!-- Stats Bar -->
+<div class="flex justify-center gap-16 mb-16 py-8 border-y border-surface-variant/50">
+<div class="text-center">
+<div class="font-pixel text-[32px] text-tertiary-container text-neon-yellow mb-2">12+</div>
+<div class="font-pixel text-[10px] text-on-surface-variant tracking-widest">JUEGOS</div>
+</div>
+<div class="text-center">
+<div class="font-pixel text-[32px] text-tertiary-container text-neon-yellow mb-2">MILES</div>
+<div class="font-pixel text-[10px] text-on-surface-variant tracking-widest">DE PARTIDAS</div>
+</div>
+<div class="text-center">
+<div class="font-pixel text-[32px] text-tertiary-container text-neon-yellow mb-2">GLOBAL</div>
+<div class="font-pixel text-[10px] text-on-surface-variant tracking-widest">RANKING</div>
+</div>
+</div>
+<h2 class="font-pixel text-[16px] text-white mb-10 flex items-center gap-4">
+<span class="text-tertiary-container">// 03</span> ACTIVIDAD EN VIVO
+            </h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+<!-- ÚLTIMAS PUNTUACIONES -->
+<div>
+<h3 class="font-pixel text-[10px] text-primary mb-6 flex items-center gap-2"><span class="w-1 h-1 bg-primary"></span> ÚLTIMAS PUNTUACIONES</h3>
+<ul class="space-y-4 font-pixel text-[10px]">
+<li class="flex justify-between items-center border-b border-surface-variant/30 pb-2">
+<span class="text-secondary-container">NEONFOX</span>
+<span class="text-on-surface-variant">Caída <span class="text-tertiary-container">+154.220</span></span>
+</li>
+<li class="flex justify-between items-center border-b border-surface-variant/30 pb-2">
+<span class="text-primary">PK_KAI</span>
+<span class="text-on-surface-variant">Glotón <span class="text-tertiary-container">+96.400</span></span>
+</li>
+<li class="flex justify-between items-center border-b border-surface-variant/30 pb-2">
+<span class="text-primary">Z3ROCOOL</span>
+<span class="text-on-surface-variant">Invasores <span class="text-tertiary-container">+54.190</span></span>
+</li>
+<li class="flex justify-between items-center border-b border-surface-variant/30 pb-2">
+<span class="text-primary">VAULT_07</span>
+<span class="text-on-surface-variant">Rocas <span class="text-tertiary-container">+41.200</span></span>
+</li>
+<li class="flex justify-between items-center border-b border-surface-variant/30 pb-2">
+<span class="text-primary">GLITCHA</span>
+<span class="text-on-surface-variant">Bloque Buster <span class="text-tertiary-container">+28.450</span></span>
+</li>
+</ul>
+</div>
+<!-- TOP JUGADORES HOY -->
+<div>
+<div class="flex justify-between items-center mb-6">
+<h3 class="font-pixel text-[10px] text-primary flex items-center gap-2"><span class="w-1 h-1 bg-primary"></span> TOP JUGADORES - HOY</h3>
+<a class="font-pixel text-[8px] text-on-surface-variant hover:text-primary" href="#">VER SALÓN →</a>
+</div>
+<ul class="space-y-4 font-pixel text-[10px]">
+<li class="flex justify-between items-center bg-surface-container-low p-3 border-l-2 border-tertiary-container">
+<div><span class="text-tertiary-container mr-4">#01</span><span class="text-white">NEONFOX</span></div>
+<span class="text-tertiary-container">312.840</span>
+</li>
+<li class="flex justify-between items-center p-3">
+<div><span class="text-on-surface-variant mr-4">#02</span><span class="text-white">PK_KAI</span></div>
+<span class="text-primary">248.110</span>
+</li>
+<li class="flex justify-between items-center p-3">
+<div><span class="text-on-surface-variant mr-4">#03</span><span class="text-white">MOONRYU</span></div>
+<span class="text-primary">196.720</span>
+</li>
+<li class="flex justify-between items-center p-3">
+<div><span class="text-on-surface-variant opacity-50 mr-4">#04</span><span class="text-on-surface-variant">VAULT_07</span></div>
+<span class="text-primary">154.300</span>
+</li>
+</ul>
+</div>
+</div>
+</section>
+<!-- 5. Precios -->
+<section class="w-full">
+<h2 class="font-pixel text-[16px] text-white mb-10 flex items-center gap-4">
+<span class="text-green-400">// 04</span> PRECIOS
+            </h2>
+<div class="flex flex-col lg:flex-row gap-12">
+<!-- Pricing Card -->
+<div class="border border-primary bg-surface-container-low p-8 relative flex-1">
+<div class="absolute -top-4 -right-4 bg-secondary-container text-black font-pixel text-[10px] p-2 rotate-12 border border-black text-neon-magenta">FREE<br/>PLAY</div>
+<div class="font-pixel text-[8px] text-on-surface-variant mb-2">PLAN ÚNICO</div>
+<h3 class="font-pixel text-[16px] text-primary mb-6">JUGADOR VAULT</h3>
+<div class="flex items-end gap-4 mb-6">
+<span class="font-pixel text-[48px] text-primary text-neon-cyan">$0</span>
+<span class="font-pixel text-[10px] text-on-surface-variant pb-2">/ SIEMPRE</span>
+</div>
+<div class="font-pixel text-[10px] text-tertiary-container mb-6">SIN TRUCOS - SIN LETRA PEQUEÑA</div>
+<ul class="space-y-3 font-pixel text-[8px] text-on-surface-variant mb-8">
+<li><span class="text-primary mr-2">✓</span> Acceso a todos los juegos</li>
+<li><span class="text-primary mr-2">✓</span> Ranking global y salón de la fama</li>
+<li><span class="text-primary mr-2">✓</span> Sin anuncios entre partidas</li>
+<li><span class="text-primary mr-2">✓</span> Guarda tus puntuaciones</li>
+<li><span class="text-primary mr-2">✓</span> Nuevos juegos cada mes</li>
+<li><span class="text-primary mr-2">✓</span> Funciona en cualquier navegador</li>
+</ul>
+<button class="w-full border border-primary text-white py-4 font-pixel text-[12px] hover:bg-primary/10 hover:text-primary transition-all">
+                        EMPEZAR GRATIS →
+                    </button>
+</div>
+<!-- FAQ -->
+<div class="flex-1 space-y-6">
+<div class="border-l-2 border-primary pl-4 py-2 bg-surface-container/30">
+<h4 class="font-pixel text-[10px] text-white mb-2">¿REALMENTE ES GRATIS?</h4>
+<p class="font-body-sm text-sm text-on-surface-variant">Sí. Arcade Vault es un proyecto sin fines de lucro hecho por amor a los clásicos. No hay versión "premium" escondida.</p>
+</div>
+<div class="border-l-2 border-secondary-container pl-4 py-2 bg-surface-container/30">
+<h4 class="font-pixel text-[10px] text-white mb-2">¿NECESITO CREAR CUENTA?</h4>
+<p class="font-body-sm text-sm text-on-surface-variant">No. Puedes jugar como invitado. Si quieres guardar tu puntuación y aparecer en el ranking, regístrate en 10 segundos.</p>
+</div>
+<div class="border-l-2 border-tertiary-container pl-4 py-2 bg-surface-container/30">
+<h4 class="font-pixel text-[10px] text-white mb-2">¿CÓMO SOBREVIVEN SIN COBRAR?</h4>
+<p class="font-body-sm text-sm text-on-surface-variant">Es un proyecto comunitario. Si te gusta, compártelo. Esa es toda la moneda que aceptamos.</p>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="w-full py-8 px-gutter flex flex-col md:flex-row justify-between items-center bg-black relative overflow-hidden border-t border-surface-variant z-50 mt-12">
+<div class="flex items-center gap-2 mb-4 md:mb-0">
+<div class="w-4 h-4 bg-primary transform rotate-45 border border-surface flex items-center justify-center"></div>
+<div class="font-pixel text-[12px] text-white opacity-50">ARCADE VAULT</div>
+</div>
+<div class="font-pixel text-[8px] text-on-surface-variant opacity-70 mb-4 md:mb-0">
+            © 198X ARCADE VAULT - INSERT COIN TO CONTINUE
+        </div>
+<ul class="flex gap-6 font-pixel text-[8px] text-on-surface-variant opacity-70">
+<li><a class="hover:text-primary transition-all" href="#">TÉRMINOS</a></li>
+<li><a class="hover:text-primary transition-all" href="#">PRIVACIDAD</a></li>
+<li><a class="hover:text-primary transition-all" href="#">CONTACTO</a></li>
+</ul>
+</footer>
+</body></html>
