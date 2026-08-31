@@ -7,11 +7,12 @@ const LINKS = [
   { href: "/", label: "Inicio", key: "inicio" },
   { href: "/juegos", label: "Biblioteca", key: "juegos" },
   { href: "/salon-de-la-fama", label: "Salón de la Fama", key: "salon" },
+  { href: "/acerca-de", label: "Acerca de", key: "acerca" },
   { href: "/acceso", label: "Acceder", key: "acceso" },
 ] as const;
 
 type Props = {
-  active?: "inicio" | "juegos" | "salon";
+  active?: "inicio" | "juegos" | "salon" | "acerca";
 };
 
 /** Menú móvil: el botón hamburguesa abre y cierra la lista de enlaces. */

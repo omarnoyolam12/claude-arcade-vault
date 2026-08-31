@@ -5,7 +5,7 @@ import { VaultMark } from "./vault-mark";
 
 type Props = {
   /** Marca el enlace de nav activo (solo en la variante "nav"). */
-  active?: "inicio" | "juegos" | "salon";
+  active?: "inicio" | "juegos" | "salon" | "acerca";
   /** "nav" (por defecto): logo + navegación. "back": logo + "Volver al vault". */
   variant?: "nav" | "back";
 };
@@ -62,6 +62,12 @@ export function SiteHeader({ active, variant = "nav" }: Props) {
               className={navLinkClass(active === "salon")}
             >
               Salón de la Fama
+            </Link>
+            <Link
+              href="/acerca-de"
+              className={navLinkClass(active === "acerca")}
+            >
+              Acerca de
             </Link>
           </nav>
 
