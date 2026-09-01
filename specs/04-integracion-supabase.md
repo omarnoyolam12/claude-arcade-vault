@@ -1,6 +1,6 @@
 # SPEC 04 — Integración de Supabase (infraestructura: clientes, sesión SSR y variables de entorno)
 
-> **Status:** Borrador
+> **Status:** Implementado
 > **Depends on:** Ninguna
 > **Date:** 2026-09-01
 > **Objective:** Dejar Supabase cableado en la app de Next (cliente de navegador, cliente de servidor con cookies vía `@supabase/ssr`, middleware de refresco de sesión y variables de entorno documentadas), sin tocar ninguna pantalla de producto ni crear tablas.
@@ -152,6 +152,7 @@ Convenciones:
 - **Sí:** los tres módulos en `lib/supabase/` (`client.ts`, `server.ts`, `middleware.ts`) y `middleware.ts` en la raíz. Import vía `@/lib/supabase/*`. Es el patrón oficial documentado.
 - **Sí:** `updateSession` llama a `auth.getUser()` aunque no haya auth. Es un no-op inofensivo hoy y deja el refresco de token cableado para cuando la haya.
 - **No:** middleware que además proteja rutas o redirija. No hay nada que proteger todavía.
+- **Desviación durante la implementación (2026-09-01):** Next 16 deprecó el convenio de archivo `middleware.ts` y lo renombró a `proxy.ts` (misma funcionalidad; cambian el nombre del archivo y el de la función exportada `middleware` → `proxy`). Ver `node_modules/next/dist/docs/01-app/03-api-reference/03-file-conventions/middleware.md`. El archivo raíz se crea como `proxy.ts` con `export async function proxy(request)` en lugar de `middleware.ts`. El helper interno sigue siendo `lib/supabase/middleware.ts` (nombre del patrón de `@supabase/ssr`, no afectado por la deprecación). Los criterios de aceptación que nombran `middleware.ts` en la raíz se leen como `proxy.ts`.
 
 ---
 
