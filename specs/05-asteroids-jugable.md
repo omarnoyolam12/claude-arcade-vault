@@ -1,6 +1,6 @@
 # SPEC 05 — Asteroids jugable en `/jugar/asteroids`
 
-> **Status:** Aprobado
+> **Status:** Implementado
 > **Depends on:** SPEC 01
 > **Date:** 2026-09-01
 > **Objective:** Integrar el juego canvas de `resources/started-games/02-claude-asteroids/` en la ruta `/jugar/asteroids` para que se pueda jugar de verdad con teclado, con el HUD React del reproductor sincronizado al estado real del juego y el modal "Fin del juego" mostrando la puntuación final real (sin persistir).
@@ -23,21 +23,22 @@ Sigue **sin haber persistencia**: no se crea ninguna tabla en Supabase, "Guardar
 
 **In:**
 
-- `public/games/asteroids/game.js` — **nuevo**. Copia bifurcada de `resources/started-games/02-claude-asteroids/game.js` con tres cambios acotados:
+- `public/games/asteroids/game.js` — **nuevo**. Copia bifurcada de `resources/started-games/02-claude-asteroids/game.js` con cuatro cambios acotados:
   1. El cuerpo del juego se envuelve en una función `startAsteroids(canvasEl)` expuesta como `window.startAsteroids`. Ya no arranca solo al cargar el script: la invoca el componente React. Devuelve una función `stop()` que cancela el `requestAnimationFrame` en curso y quita los listeners de teclado que registró.
   2. Los listeners `keydown` / `keyup` se registran dentro de `startAsteroids` (siguen sobre `window`, siguen haciendo `preventDefault` de flechas y `Space`) y se eliminan en `stop()`.
   3. Emisión de estado con `window.postMessage(msg, window.location.origin)`:
      - Cuando cambian `score`, `lives`, `level` o `state`: `{ source: "asteroids", type: "state", score, lives, level, phase }` con `phase` ∈ `"playing" | "dead" | "gameover"`. Chequeo sucio barato: solo se emite si algún valor cambió respecto al último emitido.
      - Al entrar en `state === "gameover"`: además `{ source: "asteroids", type: "gameover", score }`.
-       El resto de `game.js` (física, `drawHUD()` con SCORE / NIVEL / vidas dentro del canvas, `drawOverlay('GAME OVER', …)`, reinicio con `Space`) **no se toca**.
+  4. Reinicio programático: mientras hay una partida activa se expone `window.restartAsteroids` (= `initGame`) para que "Jugar de nuevo" reinicie el motor sin recrear el `<canvas>` (el `requestAnimationFrame` sigue vivo). `stop()` la elimina.
+     El resto de `game.js` (física, `drawHUD()` con SCORE / NIVEL / vidas dentro del canvas, `drawOverlay('GAME OVER', …)`, reinicio con `Space`) **no se toca**.
 - `components/asteroids-player.tsx` — **nuevo**, `"use client"`. Contiene todo lo jugable:
   - Un `<canvas id="canvas" width={800} height={600}>` con backing store nativo 800×600, escalado por CSS para llenar el ancho del gabinete manteniendo la relación 4:3 (`w-full h-auto aspect-[4/3]`, `image-rendering` según convenga). El gabinete CRT (borde, scanlines, viñeta) se mantiene como marco alrededor.
   - `<Script src="/games/asteroids/game.js" strategy="afterInteractive" onReady={…}>` de `next/script`. En `onReady` (y con el `<canvas>` ya montado vía `ref`) llama a `window.startAsteroids(canvasEl)` y guarda el `stop()` devuelto. En el cleanup del `useEffect` llama a `stop()`.
   - Estado local `{ score, lives, level, phase }` alimentado por un listener de `message` sobre `window`, que filtra `event.origin === window.location.origin`, `event.source === window` y `event.data?.source === "asteroids"`.
   - El HUD React del reproductor (jugador, puntuación, vidas, nivel) con **el mismo marcado y clases** que hoy tiene `app/jugar/[slug]/page.tsx`, pero leyendo del estado local en vez del objeto `hud` mock. La etiqueta de jugador queda fija (`"G4M3R_X"`, no hay auth). Puntuación formateada a 7 dígitos con ceros a la izquierda, como el mock. Vidas y nivel reales.
-  - `<GameOverModal>` en modo controlado: se abre automáticamente al recibir un mensaje `type: "gameover"` y su `finalScore` es esa puntuación final real (formateada igual que el HUD). El botón "Salir" del control deck también lo abre manualmente, mostrando la puntuación real vigente en ese momento.
+  - `<GameOverModal>` en modo controlado: se abre automáticamente al recibir un mensaje `type: "gameover"` y su `finalScore` es esa puntuación final real (formateada igual que el HUD). El botón "Salir" del control deck también lo abre manualmente, mostrando la puntuación real vigente en ese momento. Al cerrarse con "Jugar de nuevo", si la partida había terminado (`phase === "gameover"`) llama a `window.restartAsteroids()` para empezar una nueva; si se abrió con "Salir" a mitad de partida, solo cierra.
   - Bajo el gabinete, un aviso discreto (texto pequeño, `text-outline`): el juego requiere teclado (flechas para rotar/propulsar, `Espacio` para disparar). No se añaden controles táctiles.
-- `components/game-over-modal.tsx` — **modificado**. Se añade modo controlado opcional: props `open?: boolean` y `onOpenChange?: (open: boolean) => void`. Si se pasan, el padre controla la visibilidad; si no, se mantiene el comportamiento actual (estado interno, "Salir" abre, "Jugar de nuevo" cierra) para las otras cinco rutas `/jugar/*`. "Guardar puntuación" y "Pausa" siguen **sin lógica** (visuales). "Jugar de nuevo" sigue solo cerrando el modal.
+- `components/game-over-modal.tsx` — **modificado**. Se añade modo controlado opcional: props `open?: boolean` y `onOpenChange?: (open: boolean) => void`. Si se pasan, el padre controla la visibilidad; si no, se mantiene el comportamiento actual (estado interno, "Salir" abre, "Jugar de nuevo" cierra) para las otras cinco rutas `/jugar/*`. "Guardar puntuación" y "Pausa" siguen **sin lógica** (visuales). "Jugar de nuevo" sigue solo llamando a `onOpenChange(false)` / cerrando el modal; que además reinicie el juego es decisión del padre controlado (`AsteroidsPlayer`), no del modal.
 - `app/jugar/[slug]/page.tsx` — **modificado**. Si `slug === "asteroids"`, renderiza `<AsteroidsPlayer game={game} />` en lugar del bloque HUD mock + `<Image>` del gabinete + `<GameOverModal>` mock. Para los otros cinco slugs, la página queda **exactamente igual** que hoy. `generateStaticParams`, `getGame`, `notFound()` y el `SiteHeader` / `SiteFooter` no cambian.
 - `AGENTS.md` — si `next dev` lo regenera, se commitea junto con el trabajo.
 
@@ -47,7 +48,7 @@ Sigue **sin haber persistencia**: no se crea ninguna tabla en Supabase, "Guardar
 - Persistir la puntuación: tabla en Supabase, escritura de leaderboard, `lib/leaderboards.ts` sigue mock. "Guardar puntuación" no guarda.
 - Identidad de jugador real: el HUD muestra una etiqueta fija; no se lee sesión de Supabase.
 - Cambiar `app/juegos/[slug]/page.tsx` (detalle) ni `lib/games.ts`.
-- Botón "Pausa" funcional. El juego solo se reinicia con `Espacio` (comportamiento nativo de `game.js` en GAME OVER); "Jugar de nuevo" no reinicia el motor.
+- Botón "Pausa" funcional. Reinicio del juego: además del `Espacio` nativo de `game.js` en GAME OVER, "Jugar de nuevo" reinicia el motor vía `window.restartAsteroids()` (ajuste posterior a la aprobación; ver Decisions).
 - Controles táctiles o gamepad para móvil.
 - Quitar el HUD que el propio `game.js` dibuja dentro del canvas (queda duplicado con el HUD React, es aceptado).
 - Sonido, power-ups nuevos o cualquier modificación de la jugabilidad de `game.js`.
@@ -90,6 +91,7 @@ Convenciones:
 - El receptor descarta cualquier mensaje cuyo `origin` no sea el propio, cuyo `source` no sea `window`, o cuyo `data.source` no sea `"asteroids"`.
 - Coordenadas y velocidades del juego: las de `game.js` (origen arriba-izquierda, 800×600, espacio toroidal). No cambian.
 - La puntuación se muestra formateada a 7 dígitos con ceros a la izquierda solo en la capa React; `game.js` sigue emitiéndola y pintándola como entero.
+- Además del canal de mensajes, el fork expone `window.restartAsteroids()` (reinicio programático); no es un mensaje, es una llamada directa React → juego, disponible solo mientras la partida está activa.
 
 `lib/games.ts` y `lib/leaderboards.ts` no cambian.
 
@@ -107,7 +109,7 @@ Convenciones:
 
 5. **HUD sincronizado.** En `AsteroidsPlayer`, añadir estado `{ score, lives, level, phase }` y un listener de `message` (con los filtros de origen / source). Portar el marcado del HUD de `app/jugar/[slug]/page.tsx` (jugador, puntuación, vidas, nivel) al componente, leyendo del estado. Jugar y comprobar que los números del HUD React coinciden con los que `game.js` pinta dentro del canvas.
 
-6. **Modal controlado.** En `components/game-over-modal.tsx`, añadir props opcionales `open` / `onOpenChange`; si están presentes, la visibilidad la manda el padre. Sin esas props, comportamiento idéntico al actual. En `AsteroidsPlayer`, abrir el modal al recibir `type:"gameover"` y pasarle `finalScore` = esa puntuación real formateada; "Salir" del control deck también lo abre con la puntuación vigente. Recorrer las otras rutas `/jugar/arkanoid`, `/jugar/tetris`, etc.: el modal sigue funcionando como antes (no controlado).
+6. **Modal controlado.** En `components/game-over-modal.tsx`, añadir props opcionales `open` / `onOpenChange`; si están presentes, la visibilidad la manda el padre. Sin esas props, comportamiento idéntico al actual. En `AsteroidsPlayer`, abrir el modal al recibir `type:"gameover"` y pasarle `finalScore` = esa puntuación real formateada; "Salir" del control deck también lo abre con la puntuación vigente. Al cerrar con "Jugar de nuevo" en estado `gameover`, llamar a `window.restartAsteroids()`. Recorrer las otras rutas `/jugar/arkanoid`, `/jugar/tetris`, etc.: el modal sigue funcionando como antes (no controlado).
 
 7. **Aviso de teclado.** Añadir bajo el gabinete, en `AsteroidsPlayer`, el texto pequeño de "requiere teclado (flechas + Espacio)". Sin controles táctiles.
 
@@ -127,7 +129,8 @@ Convenciones:
 - [ ] El HUD React de `/jugar/asteroids` (puntuación, vidas, nivel) refleja el estado real del juego y coincide con lo que `game.js` dibuja dentro del canvas; la puntuación React se muestra con 7 dígitos y ceros a la izquierda.
 - [ ] Al llegar a `GAME OVER`, el modal "Fin del juego" se abre automáticamente y su "Puntuación final" es la puntuación real de esa partida (no `0149250` ni ningún valor mock).
 - [ ] El botón "Salir" del control deck abre el modal mostrando la puntuación real vigente.
-- [ ] "Guardar puntuación", "Pausa" y "Jugar de nuevo" no persisten ni reinician nada: siguen siendo visuales ("Jugar de nuevo" solo cierra el modal).
+- [ ] "Guardar puntuación" y "Pausa" no persisten ni cambian nada: siguen siendo visuales. "Jugar de nuevo" no persiste; cierra el modal y, si la partida había terminado, reinicia el motor vía `window.restartAsteroids()`.
+- [ ] Tras `GAME OVER`, pulsar `Espacio` reinicia la partida y el modal "Fin del juego" se cierra solo (no queda tapando el juego reiniciado).
 - [ ] Bajo el gabinete de `/jugar/asteroids` hay un aviso de que el juego requiere teclado.
 - [ ] `/jugar/pac-man`, `/jugar/arkanoid`, `/jugar/tetris`, `/jugar/snake`, `/jugar/space-invaders` renderizan igual que antes de esta spec: HUD mock, gabinete con `<Image>` y texto "Insert coin", y el `GameOverModal` no controlado (se abre con "Salir", se cierra con "Jugar de nuevo").
 - [ ] `/juegos/asteroids` (detalle) y `lib/games.ts` no han cambiado.
@@ -150,7 +153,8 @@ Convenciones:
 - **No:** quitar el HUD que `game.js` pinta dentro del canvas. Tocaría `drawHUD()` del juego; se acepta la duplicación temporal (HUD en canvas + HUD React) para no modificar la jugabilidad.
 - **Sí:** el modal "Fin del juego" muestra la puntuación final real y se abre solo al `GAME OVER`. Es el significado natural de "capturar sin persistir".
 - **No:** persistir la puntuación en Supabase. No hay tabla ni identidad de jugador conectada; es su propia spec (requiere auth real primero).
-- **No:** "Pausa" funcional ni "Jugar de nuevo" que reinicie el motor. Fuera de alcance; el reinicio nativo con `Espacio` de `game.js` basta para el MVP.
+- **No:** "Pausa" funcional. Fuera de alcance.
+- **Sí (ajuste posterior a la aprobación):** "Jugar de nuevo" reinicia el motor. La spec aprobada lo dejaba solo cerrando el modal y confiaba en el `Espacio` nativo, pero en pruebas resultó confuso (el modal se cerraba sobre una pantalla "GAME OVER" congelada). Se añadió `window.restartAsteroids()` en el fork (4º cambio acotado, no toca la jugabilidad) y `AsteroidsPlayer` lo invoca al cerrar el modal en estado `gameover`. `Espacio` sigue reiniciando igual.
 - **Sí:** escalar el canvas por CSS a lo ancho del gabinete manteniendo 4:3. Aprovecha toda la pantalla del reproductor; el backing store sigue a 800×600, así que la lógica del juego no cambia.
 - **No:** mostrar el canvas a tamaño nativo con letterboxing. Deja bandas negras grandes dentro de un gabinete `aspect-video`.
 - **Sí:** aviso de "requiere teclado" en móvil. El juego es solo teclado; es más honesto que un canvas que no responde.
@@ -179,7 +183,7 @@ Convenciones:
 - Mecanismo genérico de embebido de juegos en `lib/games.ts`.
 - Persistir la puntuación (tabla Supabase, leaderboard real, "Guardar puntuación" funcional).
 - Identidad de jugador real desde la sesión de Supabase.
-- "Pausa" funcional y "Jugar de nuevo" que reinicie el motor.
+- "Pausa" funcional. ("Jugar de nuevo" sí reinicia el motor — ajuste posterior a la aprobación; ver Decisions.)
 - Controles táctiles / gamepad.
 - Quitar el HUD interno del canvas de `game.js`.
 - Sonido o cambios de jugabilidad en `game.js`.

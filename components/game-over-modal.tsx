@@ -5,15 +5,33 @@ import { useState } from "react";
 type Props = {
   player: string;
   finalScore: string;
+  /** Modo controlado: si se pasa, el padre manda la visibilidad. */
+  open?: boolean;
+  /** Modo controlado: se llama con el próximo valor de visibilidad. */
+  onOpenChange?: (open: boolean) => void;
 };
 
 /**
  * Control deck del reproductor + modal "Fin del juego".
- * El modal arranca oculto; "Salir" lo abre y "Jugar de nuevo" lo cierra.
+ * Sin las props `open` / `onOpenChange` el modal es no controlado: arranca
+ * oculto, "Salir" lo abre y "Jugar de nuevo" lo cierra (las cinco rutas mock).
+ * Con esas props, el padre controla la visibilidad (reproductor de asteroids).
  * Nada se persiste: "Guardar puntuación" no tiene acción en este MVP visual.
  */
-export function GameOverModal({ player, finalScore }: Props) {
-  const [open, setOpen] = useState(false);
+export function GameOverModal({
+  player,
+  finalScore,
+  open: openProp,
+  onOpenChange,
+}: Props) {
+  const [openState, setOpenState] = useState(false);
+  const isControlled = openProp !== undefined;
+  const open = isControlled ? openProp : openState;
+
+  const setOpen = (next: boolean) => {
+    if (!isControlled) setOpenState(next);
+    onOpenChange?.(next);
+  };
 
   return (
     <>
@@ -22,7 +40,12 @@ export function GameOverModal({ player, finalScore }: Props) {
           type="button"
           className="flex items-center gap-2 border-2 border-primary-fixed bg-surface-container-low px-6 py-3 font-body text-body-lg uppercase text-primary-fixed transition-all hover:shadow-[0_0_20px_#63f7ff] active:scale-95"
         >
-          <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor" aria-hidden>
+          <svg
+            viewBox="0 0 24 24"
+            className="h-5 w-5"
+            fill="currentColor"
+            aria-hidden
+          >
             <rect x="6" y="5" width="4" height="14" />
             <rect x="14" y="5" width="4" height="14" />
           </svg>
@@ -33,8 +56,19 @@ export function GameOverModal({ player, finalScore }: Props) {
           onClick={() => setOpen(true)}
           className="flex items-center gap-2 border-2 border-secondary-container bg-surface-container-low px-6 py-3 font-body text-body-lg uppercase text-secondary-container transition-all hover:shadow-[0_0_20px_#ff4d80] active:scale-95"
         >
-          <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={2} aria-hidden>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M10 17l5-5-5-5M15 12H3M21 3v18" />
+          <svg
+            viewBox="0 0 24 24"
+            className="h-5 w-5"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={2}
+            aria-hidden
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M10 17l5-5-5-5M15 12H3M21 3v18"
+            />
           </svg>
           Salir
         </button>
@@ -49,10 +83,22 @@ export function GameOverModal({ player, finalScore }: Props) {
         >
           <div className="relative flex w-full max-w-2xl flex-col items-center overflow-hidden border border-primary-fixed-dim bg-surface-container p-12 text-center shadow-[0_0_40px_rgba(0,220,229,0.3)]">
             {/* Acentos de esquina */}
-            <span aria-hidden className="absolute left-0 top-0 h-8 w-8 border-l-2 border-t-2 border-primary-fixed" />
-            <span aria-hidden className="absolute right-0 top-0 h-8 w-8 border-r-2 border-t-2 border-primary-fixed" />
-            <span aria-hidden className="absolute bottom-0 left-0 h-8 w-8 border-b-2 border-l-2 border-primary-fixed" />
-            <span aria-hidden className="absolute bottom-0 right-0 h-8 w-8 border-b-2 border-r-2 border-primary-fixed" />
+            <span
+              aria-hidden
+              className="absolute left-0 top-0 h-8 w-8 border-l-2 border-t-2 border-primary-fixed"
+            />
+            <span
+              aria-hidden
+              className="absolute right-0 top-0 h-8 w-8 border-r-2 border-t-2 border-primary-fixed"
+            />
+            <span
+              aria-hidden
+              className="absolute bottom-0 left-0 h-8 w-8 border-b-2 border-l-2 border-primary-fixed"
+            />
+            <span
+              aria-hidden
+              className="absolute bottom-0 right-0 h-8 w-8 border-b-2 border-r-2 border-primary-fixed"
+            />
 
             <h2
               id="game-over-title"
@@ -60,7 +106,9 @@ export function GameOverModal({ player, finalScore }: Props) {
             >
               Fin del juego
             </h2>
-            <p className="mb-8 font-body text-body-lg uppercase text-outline">{player}</p>
+            <p className="mb-8 font-body text-body-lg uppercase text-outline">
+              {player}
+            </p>
 
             <div className="mb-12">
               <p className="mb-2 font-body text-label-lg uppercase tracking-[0.1em] text-tertiary">
