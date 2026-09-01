@@ -10,7 +10,11 @@ export function GameCard({ game }: { game: Game }) {
       {/* Scanlines propias de la card */}
       <div className="pointer-events-none absolute inset-0 z-10 bg-[repeating-linear-gradient(0deg,transparent_0px,transparent_3px,rgba(0,0,0,0.12)_3px,rgba(0,0,0,0.12)_4px)]" />
 
-      <div className="relative h-48 w-full border-b border-primary-fixed-dim bg-surface-container">
+      <Link
+        href={`/juegos/${game.slug}`}
+        aria-label={`Ver ${game.title}`}
+        className="relative block h-48 w-full border-b border-primary-fixed-dim bg-surface-container"
+      >
         <Image
           src={game.image}
           alt={game.imageAlt}
@@ -21,7 +25,7 @@ export function GameCard({ game }: { game: Game }) {
         <span className="absolute right-2 top-2 z-20 bg-primary-fixed px-2 py-1 font-body text-label-sm uppercase tracking-[0.1em] text-background">
           {game.categoryLabel}
         </span>
-      </div>
+      </Link>
 
       <div className="relative z-20 p-4">
         <h2 className="mb-2 font-display text-headline-md uppercase text-primary-fixed">
@@ -46,7 +50,9 @@ export function GameCard({ game }: { game: Game }) {
             <p className="font-body text-label-sm uppercase tracking-[0.1em] text-tertiary-fixed">
               Mejor puntuación
             </p>
-            <p className="font-body text-body-md text-white">{game.bestScore}</p>
+            <p className="font-body text-body-md text-white">
+              {game.bestScore}
+            </p>
           </div>
         </div>
       </div>

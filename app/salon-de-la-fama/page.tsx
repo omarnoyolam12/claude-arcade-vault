@@ -1,8 +1,15 @@
 import { HallOfFameTabs } from "@/components/hall-of-fame-tabs";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
+import { getGames } from "@/lib/games";
+import { getAllLeaderboards } from "@/lib/leaderboards";
 
-export default function SalonDeLaFamaPage() {
+export default async function SalonDeLaFamaPage() {
+  const [games, leaderboards] = await Promise.all([
+    getGames(),
+    getAllLeaderboards(),
+  ]);
+
   return (
     <>
       <SiteHeader active="salon" />
@@ -12,7 +19,7 @@ export default function SalonDeLaFamaPage() {
           Salón de la Fama
         </h1>
 
-        <HallOfFameTabs />
+        <HallOfFameTabs games={games} leaderboards={leaderboards} />
       </main>
 
       <SiteFooter />

@@ -2,15 +2,19 @@
 
 import { useState } from "react";
 
-import { games } from "@/lib/games";
-import { getLeaderboard } from "@/lib/leaderboards";
+import type { ScoreEntry } from "@/lib/leaderboards";
 
 import { LeaderboardTable } from "./leaderboard-table";
 
+interface HallOfFameTabsProps {
+  games: { slug: string; title: string }[];
+  leaderboards: Record<string, ScoreEntry[]>;
+}
+
 /** Pestañas de juego que cambian la tabla de puntuaciones. Por defecto: Pac-Man. */
-export function HallOfFameTabs() {
+export function HallOfFameTabs({ games, leaderboards }: HallOfFameTabsProps) {
   const [activeSlug, setActiveSlug] = useState<string>("pac-man");
-  const entries = getLeaderboard(activeSlug);
+  const entries = leaderboards[activeSlug] ?? [];
 
   return (
     <div>
