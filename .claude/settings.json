@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "f=$(jq -r '.tool_response.filePath // .tool_input.file_path'); case \"$f\" in *.js|*.jsx|*.mjs|*.cjs|*.ts|*.tsx) npx prettier --write \"$f\" 2>/dev/null; npx eslint --fix \"$f\" 2>/dev/null;; *.md|*.mdx|*.json|*.css|*.scss|*.yml|*.yaml) npx prettier --write \"$f\" 2>/dev/null;; *) [ -f \"$f\" ] && sed -i '' -e 's/[[:space:]]*$//' \"$f\" 2>/dev/null;; esac; true"
+          }
+        ]
+      }
+    ]
+  }
+}
