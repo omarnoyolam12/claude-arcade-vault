@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { notFound } from "next/navigation";
 
+import { AsteroidsPlayer } from "@/components/asteroids-player";
 import { GameOverModal } from "@/components/game-over-modal";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
@@ -16,6 +17,19 @@ export default async function ReproductorPage({
   const { slug } = await params;
   const game = getGame(slug);
   if (!game) notFound();
+
+  // SPEC 05 — solo asteroids es jugable de verdad; el resto sigue siendo maqueta.
+  if (slug === "asteroids") {
+    return (
+      <div className="flex min-h-[100dvh] flex-col overflow-hidden">
+        <SiteHeader variant="nav" />
+        <main className="relative z-10 mx-auto flex w-full max-w-arcade flex-grow flex-col items-center justify-center px-4 pb-8 pt-28">
+          <AsteroidsPlayer game={game} />
+        </main>
+        <SiteFooter />
+      </div>
+    );
+  }
 
   // Estado de "sesión de juego" — mock inline, no vive en lib/.
   const hud = { player: "G4M3R_X", score: "0149250", lives: 2, level: 4 };

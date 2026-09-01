@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arkanoid</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Abrir con un servidor estático (p. ej. `python3 -m http.server`).
+       Los modulos ES no funcionan al abrir el archivo con file://. -->
+  <main>
+    <canvas id="juego" width="800" height="600"></canvas>
+  </main>
+  <!-- API de dibujo del spritesheet (script clasico, expone globales). Debe ir antes del modulo. -->
+  <script src="assets/spritesheet.js"></script>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
