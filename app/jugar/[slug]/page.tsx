@@ -7,15 +7,16 @@ import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { getGame, getGameSlugs } from "@/lib/games";
 
-export function generateStaticParams() {
-  return getGameSlugs().map((slug) => ({ slug }));
+export async function generateStaticParams() {
+  const slugs = await getGameSlugs();
+  return slugs.map((slug) => ({ slug }));
 }
 
 export default async function ReproductorPage({
   params,
 }: PageProps<"/jugar/[slug]">) {
   const { slug } = await params;
-  const game = getGame(slug);
+  const game = await getGame(slug);
   if (!game) notFound();
 
   // SPEC 05 — solo asteroids es jugable de verdad; el resto sigue siendo maqueta.

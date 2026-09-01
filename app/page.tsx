@@ -4,10 +4,11 @@ import Link from "next/link";
 
 import { GameThumb } from "@/components/game-thumb";
 import { HeroBackdrop } from "@/components/hero-backdrop";
+import { PerspectiveGrid } from "@/components/perspective-grid";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { recentScores, topPlayersToday } from "@/lib/activity";
-import { games } from "@/lib/games";
+import { getGames } from "@/lib/games";
 
 // "Press Start 2P" (cargada en layout.tsx) solo para el titular del Hero y los
 // rótulos "// NN". Se aplica por `style` inline porque las reglas de elemento
@@ -93,12 +94,16 @@ const BENEFITS = [
   },
 ] as const;
 
-export default function HomePage() {
+export default async function HomePage() {
+  const games = await getGames();
+
   return (
     <>
       <SiteHeader active="inicio" />
 
-      <main className="mx-auto w-full max-w-arcade px-margin pb-margin pt-32">
+      <main className="relative mx-auto w-full max-w-arcade px-margin pb-margin pt-32">
+        <PerspectiveGrid />
+
         {/* 1. Hero */}
         <section className="relative flex min-h-[60vh] flex-col items-center justify-center overflow-hidden text-center">
           <HeroBackdrop />
@@ -237,7 +242,9 @@ export default function HomePage() {
                     </span>
                     <span className="text-on-surface-variant">
                       {entry.game}{" "}
-                      <span className="text-tertiary-fixed">{entry.points}</span>
+                      <span className="text-tertiary-fixed">
+                        {entry.points}
+                      </span>
                     </span>
                   </li>
                 ))}

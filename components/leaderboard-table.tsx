@@ -7,6 +7,18 @@ function ordinal(n: number): string {
   return `${n}${suffixes[(v - 20) % 10] ?? suffixes[v] ?? suffixes[0]}`;
 }
 
+/** 3333360 → "3,333,360" (separador de miles estilo en-US). */
+function formatScore(n: number): string {
+  return n.toLocaleString("en-US");
+}
+
+/** "HOY" si la fecha es null o es la de hoy; si no, el string "YYYY-MM-DD". */
+function formatDate(d: string | null): string {
+  if (d === null) return "HOY";
+  const today = new Date().toISOString().slice(0, 10);
+  return d === today ? "HOY" : d;
+}
+
 /** Oro / plata / bronce para el top-3 en la variante "full". */
 function rankColor(rank: number): string {
   if (rank === 1) return "text-tertiary-fixed [text-shadow:0_0_10px_#e3ec00]";
@@ -52,7 +64,9 @@ export function LeaderboardTable({ entries, variant }: Props) {
                 <span className="flex-1 uppercase tracking-wider text-on-surface-variant">
                   {entry.player}
                 </span>
-                <span className="text-right text-white">{entry.score}</span>
+                <span className="text-right text-white">
+                  {formatScore(entry.score)}
+                </span>
               </li>
             ))}
           </ul>
@@ -114,10 +128,10 @@ export function LeaderboardTable({ entries, variant }: Props) {
                     : "text-primary-fixed"
                 }`}
               >
-                {entry.score}
+                {formatScore(entry.score)}
               </td>
               <td className="hidden px-4 py-4 text-right sm:table-cell">
-                {entry.date}
+                {formatDate(entry.achievedAt)}
               </td>
             </tr>
           ))}

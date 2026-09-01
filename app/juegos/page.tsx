@@ -2,9 +2,11 @@ import { GameCard } from "@/components/game-card";
 import { ShaderBackground } from "@/components/shader-background";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
-import { games } from "@/lib/games";
+import { getGames } from "@/lib/games";
 
-export default function JuegosPage() {
+export default async function JuegosPage() {
+  const games = await getGames();
+
   return (
     <>
       <ShaderBackground />

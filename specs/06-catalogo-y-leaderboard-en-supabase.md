@@ -1,6 +1,6 @@
 # SPEC 06 — Catálogo y leaderboard en Supabase (tablas `games` y `scores`, solo lectura)
 
-> **Status:** Aprobado
+> **Status:** Implementado
 > **Depends on:** SPEC 04
 > **Date:** 2026-09-01
 > **Objective:** Crear las tablas `public.games` y `public.scores` en Supabase, sembrarlas con los datos que hoy viven en `lib/games.ts` y `lib/leaderboards.ts`, y reescribir esos módulos y las páginas que los consumen para que lean de Supabase (solo lectura, sin escritura ni auth).

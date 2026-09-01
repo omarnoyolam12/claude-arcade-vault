@@ -9,18 +9,19 @@ import { SiteHeader } from "@/components/site-header";
 import { getGame, getGameSlugs } from "@/lib/games";
 import { getLeaderboard } from "@/lib/leaderboards";
 
-export function generateStaticParams() {
-  return getGameSlugs().map((slug) => ({ slug }));
+export async function generateStaticParams() {
+  const slugs = await getGameSlugs();
+  return slugs.map((slug) => ({ slug }));
 }
 
 export default async function DetalleJuegoPage({
   params,
 }: PageProps<"/juegos/[slug]">) {
   const { slug } = await params;
-  const game = getGame(slug);
+  const game = await getGame(slug);
   if (!game) notFound();
 
-  const leaderboard = getLeaderboard(slug);
+  const leaderboard = await getLeaderboard(slug);
 
   return (
     <>
