@@ -5,6 +5,7 @@ import { AsteroidsPlayer } from "@/components/asteroids-player";
 import { GameOverModal } from "@/components/game-over-modal";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
+import { TetrisPlayer } from "@/components/tetris-player";
 import { getGame, getGameSlugs } from "@/lib/games";
 
 export async function generateStaticParams() {
@@ -19,13 +20,18 @@ export default async function ReproductorPage({
   const game = await getGame(slug);
   if (!game) notFound();
 
-  // SPEC 05 — solo asteroids es jugable de verdad; el resto sigue siendo maqueta.
-  if (slug === "asteroids") {
+  // SPEC 05 / 07 — asteroids y tetris son jugables de verdad; el resto sigue
+  // siendo maqueta.
+  if (slug === "asteroids" || slug === "tetris") {
     return (
       <div className="flex min-h-[100dvh] flex-col overflow-hidden">
         <SiteHeader variant="nav" />
         <main className="relative z-10 mx-auto flex w-full max-w-arcade flex-grow flex-col items-center justify-center px-4 pb-8 pt-28">
-          <AsteroidsPlayer game={game} />
+          {slug === "asteroids" ? (
+            <AsteroidsPlayer game={game} />
+          ) : (
+            <TetrisPlayer game={game} />
+          )}
         </main>
         <SiteFooter />
       </div>

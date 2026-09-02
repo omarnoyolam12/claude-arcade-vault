@@ -9,20 +9,37 @@ type Props = {
   open?: boolean;
   /** Modo controlado: se llama con el próximo valor de visibilidad. */
   onOpenChange?: (open: boolean) => void;
+  /**
+   * Si se pasa, el botón "Pausa" del control deck la invoca; si no, sigue
+   * siendo visual (las cinco rutas mock).
+   */
+  onPause?: () => void;
+  /**
+   * Si se pasa, "Guardar puntuación" la invoca. Mientras corre el botón queda
+   * deshabilitado ("Guardando…"); con `ok: true` queda deshabilitado con
+   * "Puntuación guardada"; con `ok: false` muestra el error y permite reintentar.
+   * Sin ella el botón sigue siendo visual.
+   */
+  onSave?: () => Promise<{ ok: boolean; error?: string }>;
 };
+
+type SaveState = "idle" | "saving" | "saved" | "error";
 
 /**
  * Control deck del reproductor + modal "Fin del juego".
  * Sin las props `open` / `onOpenChange` el modal es no controlado: arranca
  * oculto, "Salir" lo abre y "Jugar de nuevo" lo cierra (las cinco rutas mock).
- * Con esas props, el padre controla la visibilidad (reproductor de asteroids).
- * Nada se persiste: "Guardar puntuación" no tiene acción en este MVP visual.
+ * Con esas props, el padre controla la visibilidad (reproductores jugables).
+ * `onPause` / `onSave` son opcionales: sin ellas "Pausa" y "Guardar puntuación"
+ * siguen siendo visuales, como en asteroids y las cuatro rutas mock.
  */
 export function GameOverModal({
   player,
   finalScore,
   open: openProp,
   onOpenChange,
+  onPause,
+  onSave,
 }: Props) {
   const [openState, setOpenState] = useState(false);
   const isControlled = openProp !== undefined;
@@ -33,11 +50,54 @@ export function GameOverModal({
     onOpenChange?.(next);
   };
 
+  const [saveState, setSaveState] = useState<SaveState>("idle");
+  const [saveError, setSaveError] = useState<string | undefined>(undefined);
+
+  // El estado "guardada" se reinicia cuando el modal pasa de cerrado a abierto
+  // (nueva partida). Patrón de React de "ajustar estado al cambiar una prop":
+  // se compara con el valor anterior durante el render, sin useEffect.
+  const [prevOpen, setPrevOpen] = useState(open);
+  if (open !== prevOpen) {
+    setPrevOpen(open);
+    if (open) {
+      setSaveState("idle");
+      setSaveError(undefined);
+    }
+  }
+
+  async function handleSave() {
+    if (!onSave || saveState === "saving" || saveState === "saved") return;
+    setSaveState("saving");
+    setSaveError(undefined);
+    try {
+      const result = await onSave();
+      if (result.ok) {
+        setSaveState("saved");
+      } else {
+        setSaveState("error");
+        setSaveError(result.error ?? "No se pudo guardar la puntuación.");
+      }
+    } catch {
+      setSaveState("error");
+      setSaveError("No se pudo guardar la puntuación. Inténtalo de nuevo.");
+    }
+  }
+
+  const saveLabel =
+    saveState === "saving"
+      ? "Guardando…"
+      : saveState === "saved"
+        ? "Puntuación guardada"
+        : saveState === "error"
+          ? "Reintentar guardado"
+          : "Guardar puntuación";
+
   return (
     <>
       <div className="mt-6 flex w-full max-w-5xl items-center justify-between px-4">
         <button
           type="button"
+          onClick={() => onPause?.()}
           className="flex items-center gap-2 border-2 border-primary-fixed bg-surface-container-low px-6 py-3 font-body text-body-lg uppercase text-primary-fixed transition-all hover:shadow-[0_0_20px_#63f7ff] active:scale-95"
         >
           <svg
@@ -129,11 +189,19 @@ export function GameOverModal({
               </button>
               <button
                 type="button"
-                className="max-w-xs flex-1 border-2 border-outline-variant bg-surface-container-lowest px-8 py-4 font-body text-body-lg uppercase text-on-surface transition-all hover:border-tertiary hover:text-tertiary hover:shadow-[0_0_15px_#fdffb5] active:scale-95"
+                onClick={onSave ? handleSave : undefined}
+                disabled={saveState === "saving" || saveState === "saved"}
+                className="max-w-xs flex-1 border-2 border-outline-variant bg-surface-container-lowest px-8 py-4 font-body text-body-lg uppercase text-on-surface transition-all hover:border-tertiary hover:text-tertiary hover:shadow-[0_0_15px_#fdffb5] active:scale-95 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:border-outline-variant disabled:hover:text-on-surface disabled:hover:shadow-none"
               >
-                Guardar puntuación
+                {saveLabel}
               </button>
             </div>
+
+            {saveState === "error" && saveError && (
+              <p className="mt-4 font-body text-label-lg text-secondary-container">
+                {saveError}
+              </p>
+            )}
           </div>
         </div>
       )}
