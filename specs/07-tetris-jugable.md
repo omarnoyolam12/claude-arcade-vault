@@ -1,6 +1,6 @@
 # SPEC 07 — Tetris jugable en `/jugar/tetris` con guardado de puntuación
 
-> **Status:** Aprobado
+> **Status:** Implementado
 > **Depends on:** SPEC 05, SPEC 06
 > **Date:** 2026-09-02
 > **Objective:** Integrar el juego canvas de `resources/started-games/03-claude-tetris/` en la ruta `/jugar/tetris` para que se pueda jugar de verdad con teclado, con el HUD React del reproductor sincronizado al estado real del juego, y hacer que "Guardar puntuación" inserte de verdad la marca en `public.scores` (primera escritura real del proyecto).
