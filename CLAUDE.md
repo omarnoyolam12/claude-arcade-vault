@@ -80,6 +80,10 @@ Componentes de juego: `asteroids-player`, `tetris-player`, `arkanoid-player`, `s
 
 Skills instaladas: `skills-lock.json`. Specs existentes: `specs/` (01 pantallas → 09 snake).
 
+## Agentes
+
+- **`game-planner`** (`.claude/agents/game-planner.md`) — subagente que analiza el catálogo, la estética y el patrón de portado, y **decide qué juego añadir a continuación** con su justificación y alternativas. No escribe código ni specs; su cierre es sugerir `/juego-jugable`. Mantiene memoria de todo lo sugerido en `.claude/game-planner/registro-sugerencias.md` (versionado) y no repite propuestas previas. Se invoca de forma explícita ("usa el agente game-planner…").
+
 <!-- BEGIN:nextjs-agent-rules -->
 
 # This is NOT the Next.js you know
