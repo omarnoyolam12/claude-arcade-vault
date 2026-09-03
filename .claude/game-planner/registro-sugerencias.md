@@ -22,6 +22,8 @@ anexa al final de cada uno.** No repetir un juego ya listado sin justificarlo.
 | 2026-09-03 | Lights Out                | Alternativa considerada | Propuesto |
 | 2026-09-03 | Dr. Mario                 | Descartado              | Rechazado |
 | 2026-09-03 | Minesweeper               | Descartado              | Rechazado |
+| 2026-09-03 | Frogger                   | Recomendado (reservas)  | Propuesto |
+| 2026-09-03 | Kaboom!                   | Alternativa considerada | Propuesto |
 
 ## Formato de entrada
 
@@ -609,3 +611,138 @@ score, achieved_at: null }` con el cliente `anon` y la política `anon_insert_sc
   teclado se siente mal y desvirtúa el juego. Si en el futuro se acepta una mira con
   teclado, se puede retomar. Puntuación + game over sí encajarían (puntos por misil
   interceptado + bonus por ciudades y munición restante; fin al perder las 6 ciudades).
+
+---
+
+# 2026-09-03 — Evaluación puntual pedida por el usuario: ¿Frogger?
+
+El usuario pregunta explícitamente si conviene portar **Frogger** como siguiente juego
+jugable en `/jugar/[slug]`. Frogger ya se había **mencionado una vez** en el registro,
+dentro de la ronda de shooters (entrada de Centipede, 2026-09-03): allí se apartó como
+"alternativa descartada dentro de ese hueco" por estar **fuera del enfoque** de aquella
+tanda (acción/disparos), no por fallar el checklist. No figuraba en el Índice ni tenía
+veredicto propio. Aquí se evalúa a fondo por primera vez.
+
+Estado de la plataforma al evaluar: jugables de verdad `asteroids`, `tetris`, `arkanoid`,
+`snake` (rama en `app/jugar/[slug]/page.tsx`, forks en `public/games/`). Maquetas:
+`pac-man`, `space-invaders`. Starters sin portar en `resources/started-games/`: ninguno
+(`02`/`03`/`04` ya portados). Frogger, por tanto, sería **desde cero en canvas vanilla**,
+patrón `snake` (SPEC 09).
+
+## 2026-09-03 — Frogger
+
+- **Veredicto:** Recomendado con reservas
+- **Encaje:**
+  - **Clásico reconocible:** sí, de los de primera fila (Konami/Sega, 1981). "Cruza la
+    carretera y el río" se entiende con solo ver la pantalla; alto valor de nostalgia.
+  - **Género que falta:** cruce por carriles / esquiva con objetivo ("llega arriba"). El
+    catálogo no tiene nada así. Lo más cercano es `snake` (movimiento en rejilla), pero
+    Snake no tiene peligros móviles que esquivar ni meta que alcanzar; y no duplica a
+    `pac-man` (laberinto con persecución) ni a los dos shooters (aquí no se dispara).
+  - **Solo teclado:** nativo. Cuatro flechas = saltos discretos casilla a casilla. Sin
+    ratón, táctil ni gamepad.
+  - **Puntuación + game over:** limpio. Score entero acumulable (p. ej. 10 por salto hacia
+    adelante, 50 por rana llevada a casa, bonus por tiempo restante e insecto, 1000 por
+    completar las 5 casas). Fin de partida claro: se agotan las 3 vidas (atropello,
+    ahogo, quedar arrastrado fuera por un tronco, agotar el tiempo, saltar a una casa
+    ocupada). Encaja en `public.scores` / `anon_insert_scores` **sin cambios de esquema**.
+  - **Estética CRT:** encaje fuerte. Filosofía de rejilla rígida y formas 100% rectangulares
+    de `DESIGN.md` (roundedness 0, sin círculos): carriles de tráfico neón (coches magenta),
+    troncos/tortugas cian, agua como vacío negro, casas en amarillo ácido. Rana como sprite
+    vectorial/pixel simple dibujado con `ctx` — **sin assets binarios** (a diferencia de
+    Snake, que traía `fruits.png`).
+  - **HUD:** Frogger **sí tiene vidas (3) y nivel**, así que mapea **1:1 con el bloque
+    "Vidas / Nivel" del mock** de `app/jugar/[slug]/page.tsx` (corazones SVG + `LVL n`),
+    igual que Pac-Man y a diferencia de Snake/Tetris. El temporizador por vida se pinta
+    como barra dentro del canvas (precedente conceptual: la barra de vida de SINCRO).
+  - **Licencia:** el código y los gráficos van desde cero (sin assets de terceros). "Frogger"
+    es marca de Konami; ver reservas.
+- **Mapa al patrón de portado:**
+  - Contrato: `window.startFrogger(canvasEl)` / `stop()` / `restartFrogger()` /
+    `toggleFroggerPause()` — mismo cuarteto que arkanoid/snake. `stop()` =
+    `cancelAnimationFrame` + flag `detenido` + `removeEventListener` de teclado.
+  - Motor: filas tipadas (segura / carretera / agua / casas). Cada fila de peligro tiene
+    un generador de entidades (rectángulos) con velocidad, sentido y separación; envoltura
+    horizontal. Colisión: en carretera, solapar un coche = muerte; en agua, **no** solapar
+    plataforma = muerte; sobre plataforma, la `x` de la rana deriva con la plataforma.
+    Cinco ranuras de casa arriba: casa vacía = rana a salvo y vuelta al inicio; ocupada o
+    fallo = muerte. Temporizador por vida.
+  - `postMessage(msg, window.location.origin)` con chequeo sucio:
+    `{ source: "frogger", type: "state", score, lives, level, phase }` con
+    `phase ∈ "playing" | "paused" | "gameover"`; al perder la última vida, además
+    `{ source: "frogger", type: "gameover", score }`. Campo opcional `homes` (0..5) para
+    dar sabor al HUD, análogo a como `snake` añadió `length`.
+  - `components/frogger-player.tsx` calcado de `components/snake-player.tsx`: `<canvas>`
+    con backing store nativo fijo, escalado por CSS, gabinete CRT como marco, un solo
+    `<Script strategy="afterInteractive">` (sin spritesheet → sin doble gate). Filtro de
+    `message` por `origin` + `event.source === window` + `data.source === "frogger"`.
+  - Server Action `guardarPuntuacionFrogger({ score })` en `app/jugar/[slug]/actions.ts`,
+    gemela de `guardarPuntuacionSnake`: inserta
+    `{ game_slug: "frogger", player: "G4M3R_X", score, achieved_at: null }` con el cliente
+    `@/lib/supabase/anon` (política `anon_insert_scores` de SPEC 07, sin cambio de
+    esquema); revalida `/salon-de-la-fama` y `/juegos/frogger`.
+  - Rama en `app/jugar/[slug]/page.tsx`: ampliar la condición jugable a `"frogger"` →
+    `<FroggerPlayer game={game} />`; `pac-man` y `space-invaders` siguen maqueta.
+- **Origen del motor:** desde cero (canvas vanilla, sin dependencias ni bundler), como
+  `snake` en SPEC 09. No hay starter ni assets; todo se dibuja con `ctx`.
+- **Complejidad:** Media — por debajo de Pac-Man (sin IA de fantasmas ni pathfinding) y a
+  la par de Snake. El sistema de entidades por carril es simple (arrays de rectángulos
+  con envoltura). Cabe en una spec del tamaño de SPEC 05/07/08/09.
+- **Reservas / riesgos:**
+  1. **Nombre con marca.** "Frogger" es marca registrada de Konami. Los slugs `pac-man` y
+     `space-invaders` ya usan nombres reales en `public.games`, así que hay precedente;
+     pero si se quiere evitar, coincidir el título de la fila nueva con un nombre propio
+     (p. ej. `CRUCE`) como se hizo con ALETEO/SEÑAL/SINCRO. Decisión para la spec.
+  2. **Campo vertical en gabinete apaisado.** Frogger es clásicamente más alto que ancho;
+     el gabinete es 4:3/16:9. Hay que decidir número de columnas / letterbox lateral y
+     fijar el backing store como hizo SPEC 09. Muchos ports domésticos lo adaptaron a
+     apaisado sin problema.
+  3. **Montar la rana en el tronco.** Mezclar deriva continua (la rana se mueve con la
+     plataforma entre saltos) con una rejilla por lo demás discreta. Mitigación: `x` de la
+     rana como float; en filas de agua se le suma la velocidad de la plataforma por frame;
+     solo se ajusta a columna al recibir input de salto; muerte si la `x` sale del campo.
+  4. **Reglas de solape.** Hitbox de coche vs. rana y el borde "medio subido al tronco"
+     (¿va montada con 50 % de solape?) necesitan una regla documentada en Decisions.
+  5. **Migración de catálogo.** `frogger` (o `cruce`) **no existe** en `public.games`; la
+     FK `scores.game_slug → games.slug` obliga a una migración `0004_add_frogger_game.sql`
+     con la fila (`category_label` sugerido `ARCADE`, `year` 1981, tags `REFLEJOS` /
+     `CLÁSICO`, imagen, `best_score` semilla) y, opcionalmente, un seed de leaderboard
+     histórico para que la pestaña del Salón no salga vacía. `anon_insert_scores` cubre el
+     `INSERT` sin más cambios de política.
+- **Estado:** Propuesto
+- **Notas:** Recomendado como siguiente porte si el objetivo es **abrir un género nuevo**
+  (cruce/esquiva por carriles) con una entrada de catálogo nueva. Las reservas son de
+  diseño, no bloqueantes: se resuelven en las Decisions de la spec. Si en cambio se
+  prioriza fricción cero de infraestructura, Pac-Man / Space Invaders (ya en el registro
+  como Recomendado) convierten una maqueta existente sin migración alguna.
+
+## 2026-09-03 — Kaboom! (reserva, mismo tema de habilidad de una pantalla)
+
+- **Veredicto:** Alternativa considerada
+- **Encaje:** Atrapar con cubos las bombas que suelta un bombardero errático en lo alto
+  (Activision, 1981). Género distinto (atrape/reflejo puro en un solo eje horizontal), no
+  cubierto por el catálogo. Solo teclado (izquierda/derecha). Score entero acumulable
+  (puntos por bomba atrapada, más por oleada más rápida) y game over claro (se pierde una
+  fila de cubos por cada bomba que toca el suelo; sin cubos, fin). Estética CRT directa:
+  bombardero y cubos rectangulares de neón sobre negro, cero curvas.
+- **Origen del motor:** desde cero (canvas vanilla). Motor mínimo: un actor arriba que
+  patrulla y suelta, N bombas en caída libre, un colector de 3 filas, colisión AABB.
+- **Complejidad:** Baja — el más rápido de portar de esta evaluación; menos superficie que
+  Frogger (sin filas tipadas, sin montar plataformas, sin temporizador).
+- **Estado:** Propuesto
+- **Notas:** Pierde frente a Frogger en **reconocibilidad** ("lo reconozco al verlo" es más
+  débil) y comparte el problema de **marca en el nombre** (mitigable con título propio y
+  slug neutro). Buen candidato si se pide "algo rápido de portar". Mensaje sugerido:
+  `{ source: "kaboom", type: "state", score, lives, level, phase }` con `lives` = filas de
+  cubos restantes; tercer bloque del HUD = "CUBOS" + "NIVEL". Requiere igualmente una
+  migración `0004_*` con la fila de catálogo.
+
+**Cierre de la evaluación:** a la pregunta "¿es recomendado implementar Frogger?" →
+**sí, recomendado con reservas**. Cumple todo el checklist de encaje, abre un género que
+falta, es teclado-nativo, no necesita assets y cabe en una sola spec; las dos pegas
+(nombre de marca y campo vertical en gabinete apaisado) son decisiones de diseño que la
+spec resuelve. Reserva 1: **Pac-Man** (ya en el registro; cero migración, convierte
+maqueta en jugable) si se prefiere mínima fricción de infraestructura sobre género nuevo.
+Reserva 2: **Kaboom!** (nuevo; más rápido de portar, menos icónico).
+
+Siguiente paso sugerido: `/juego-jugable frogger`.

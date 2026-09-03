@@ -83,6 +83,7 @@ Skills instaladas: `skills-lock.json`. Specs existentes: `specs/` (01 pantallas 
 ## Agentes
 
 - **`game-planner`** (`.claude/agents/game-planner.md`) — subagente que analiza el catálogo, la estética y el patrón de portado, y **decide qué juego añadir a continuación** con su justificación y alternativas. No escribe código ni specs; su cierre es sugerir `/juego-jugable`. Mantiene memoria de todo lo sugerido en `.claude/game-planner/registro-sugerencias.md` (versionado) y no repite propuestas previas. Se invoca de forma explícita ("usa el agente game-planner…").
+- **`game-jam`** (`.claude/agents/game-jam.md`) — subagente que recibe **un tema** y genera de una sola vez, sin preguntar, 2–4 juegos que lo encajan. Por cada juego escribe una carpeta `specs/game-jam/<game-id>/` con **al menos dos specs completos** en estado `Borrador`: un `01-<game-id>-jugable.md` en la forma de `/juego-jugable` (motor + HUD por `postMessage` + leaderboard escribible) y uno o más `02-<game-id>-<incremento>.md` en la forma de `/spec`. Reutiliza el formato de `.claude/skills/spec/template.md` y el patrón SPEC 05/07/08/09; no escribe código ni migraciones. Memoria en `.claude/game-jam/registro-jams.md` (y lee la de `game-planner` para no repetir). Se invoca de forma explícita ("usa el agente game-jam con el tema…").
 
 <!-- BEGIN:nextjs-agent-rules -->
 
