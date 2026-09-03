@@ -1,6 +1,6 @@
 # SPEC 09 — Snake jugable en `/jugar/snake` con guardado de puntuación
 
-> **Status:** Draft
+> **Status:** Implementado
 > **Depends on:** SPEC 05, SPEC 06, SPEC 07
 > **Date:** 2026-09-03
 > **Objective:** Poner un Snake de cuadrícula jugable de verdad en la ruta `/jugar/snake`, escrito desde cero sobre `resources/snake-assets/` (spritesheet de frutas), con el HUD React del reproductor sincronizado al estado real del juego y "Guardar puntuación" insertando la marca en `public.scores` reutilizando la escritura real que SPEC 07 estrenó para Tetris.
