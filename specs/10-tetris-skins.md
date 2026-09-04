@@ -154,16 +154,16 @@ window.setTetrisSkin?: (skin: TetrisSkinId) => void;
 
 ## Criterios de aceptación
 
-- [ ] `/jugar/tetris` muestra un `<select>` con las opciones Clásico, Retro y Neon, con Clásico como valor inicial cuando no hay preferencia guardada.
-- [ ] Cambiar la selección durante una partida en curso (fase `playing` o `paused`) cambia la paleta/efecto del tablero y del panel "next" en el siguiente frame, sin reiniciar `score`, `lines`, `level` ni el estado de las piezas.
-- [ ] La skin `neon` dibuja un glow visible (`shadowBlur`) alrededor de los bloques; `clasico` y `retro` no tienen glow.
-- [ ] La skin `retro` usa una paleta visualmente distinta (verde/ámbar desaturado) a la de `clasico`/`neon`.
-- [ ] La elección de skin persiste en `localStorage["tetris-skin"]` y se restaura al recargar `/jugar/tetris`.
-- [ ] Si `localStorage` no está disponible o el valor guardado es inválido, el reproductor arranca en `"clasico"` sin lanzar error.
-- [ ] `npm run build` pasa sin errores de tipos ni de lint.
-- [ ] El resto del comportamiento de Tetris (controles, pausa con `P`, guardado real de puntuación vía `guardarPuntuacionTetris`, `GameOverModal`) no cambia.
-- [ ] `.claude/agents/skin-designer.md` incluye la sección de patrón de referencia de esta spec.
-- [ ] El agente `skin-designer` fue invocado en Modo B sobre el resultado y su veredicto quedó registrado en `.claude/skin-designer/registro-skins.md`.
+- [x] `/jugar/tetris` muestra un `<select>` con las opciones Clásico, Retro y Neon, con Clásico como valor inicial cuando no hay preferencia guardada.
+- [x] Cambiar la selección durante una partida en curso (fase `playing` o `paused`) cambia la paleta/efecto del tablero y del panel "next" en el siguiente frame, sin reiniciar `score`, `lines`, `level` ni el estado de las piezas.
+- [x] La skin `neon` dibuja un glow visible (`shadowBlur`) alrededor de los bloques; `clasico` y `retro` no tienen glow.
+- [x] La skin `retro` usa una paleta visualmente distinta (verde/ámbar desaturado) a la de `clasico`/`neon`.
+- [x] La elección de skin persiste en `localStorage["tetris-skin"]` y se restaura al recargar `/jugar/tetris`.
+- [x] Si `localStorage` no está disponible o el valor guardado es inválido, el reproductor arranca en `"clasico"` sin lanzar error.
+- [x] `npm run build` pasa sin errores de tipos ni de lint.
+- [x] El resto del comportamiento de Tetris (controles, pausa con `P`, guardado real de puntuación vía `guardarPuntuacionTetris`, `GameOverModal`) no cambia.
+- [x] `.claude/agents/skin-designer.md` incluye la sección de patrón de referencia de esta spec.
+- [x] El agente `skin-designer` fue invocado en Modo B sobre el resultado y su veredicto quedó registrado en `.claude/skin-designer/registro-skins.md`.
 
 ---
 
