@@ -150,6 +150,41 @@ Devuelve al hilo principal:
   adicional" (Modo B cuando `Pasa`).
 - **Registro** — confirma la ruta del ledger y que anexaste la(s) entrada(s).
 
+## Patrón de referencia (SPEC 10 — Tetris)
+
+`specs/10-tetris-skins.md` implementó el primer sistema de skins real del catálogo, en
+`public/games/tetris/game.js` + `components/tetris-player.tsx`. Úsalo como plantilla al
+proponer (Modo A) o verificar (Modo B) skins en cualquier otro juego jugable:
+
+- **Estructura de paleta en el fork.** Un único mapa (`SKINS` en Tetris) con una entrada por
+  skin (`clasico`, `retro`, `neon`), cada una con los campos que el juego necesite para pintarse
+  — como mínimo colores por elemento (`pieceColors` o equivalente), color de rejilla/fondo
+  (`grid`), color de resalte (`highlight`) y un efecto opcional de brillo (`glow: { blur, alpha }
+| null`). Vive enteramente en el `game.js` bifurcado/autoral, nunca en CSS.
+- **Contrato `window.set<Slug>Skin(skin)`.** Expuesto junto a `restart<Slug>` /
+  `toggle<Slug>Pause` en el mismo punto del código, y retirado en `stop()` con el mismo patrón
+  (`if (window.set<Slug>Skin === setSkin) delete window.set<Slug>Skin`). Valida que `skin` sea
+  una clave conocida antes de reasignar el estado interno; si no, no hace nada.
+- **Redibujado inmediato, no solo "en el próximo frame natural".** No basta con reasignar la
+  variable de skin activa y confiar en que el loop de render la recoja: si el motor tiene más de
+  una superficie de dibujo (p. ej. tablero + panel "next" en Tetris) o puede estar en un estado
+  donde el loop principal no repinta (p. ej. pausado), `set<Slug>Skin` debe forzar explícitamente
+  cada función de dibujo relevante (en Tetris: `draw()` y `drawNext()`) para que el cambio se vea
+  en cualquier fase de juego, no solo mientras corre el rAF sin pausa. Este matiz no era obvio en
+  la spec original de Tetris y causó una brecha real detectada en verificación manual durante su
+  implementación — no lo des por sentado al proponer otros juegos.
+- **Persistencia en `localStorage` con clave `<slug>-skin`.** Leída/escrita **solo desde el
+  componente React** (`components/<slug>-player.tsx`), nunca desde el fork del motor. Lectura al
+  montar con `try/catch` y fallback a `"clasico"` si falta la clave, el valor es inválido, o
+  `localStorage` no está disponible. El motor sincroniza su skin inicial vía
+  `window.set<Slug>Skin?.(skin)` justo después de `window.start<Slug>(...)` en el `onReady` del
+  `<Script>`, porque el motor siempre nace en `"clasico"`.
+- **UI: `<select>` nativo sobre el gabinete.** Visible y habilitado en cualquier fase de juego
+  (jugando, pausado, game over) — el jugador puede cambiar de skin en caliente sin reiniciar la
+  partida. Sin CSS nuevo: solo utilidades Tailwind ya usadas en el reproductor.
+- **Nombres de skin canónicos:** `clasico` (default), `retro`, `neon` — en ese orden, siempre en
+  minúsculas sin acento para las claves de código (los labels de UI sí llevan tilde: "Clásico").
+
 ## Reglas duras
 
 - No escribes código de producto, specs, ni migraciones. Tu única escritura es

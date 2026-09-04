@@ -1,6 +1,6 @@
 # SPEC 10 — Skins seleccionables (clásico / retro / neon) para Tetris
 
-> **Status:** Aprobado
+> **Status:** Implementado
 > **Depends on:** SPEC 07
 > **Date:** 2026-09-04
 > **Objective:** Añadir a `/jugar/tetris` un selector de skin visual con tres opciones (clásico, retro, neon) que cambia en caliente la paleta y el efecto de dibujo del canvas sin reiniciar la partida, persiste la elección en `localStorage` y deja al agente `skin-designer` documentado con el patrón para aplicarlo después a los demás juegos.

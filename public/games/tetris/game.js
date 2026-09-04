@@ -11,9 +11,11 @@
 //   togglePause() ya no muestran #overlay. El estado viaja por postMessage
 //   (cambio 4, se añade en el paso 4).
 // Cambio 3: fuera el tema propio (applyTheme, THEME_KEY, localStorage,
-//   #theme-toggle). theme se fija a 'dark' para que THEME_COLORS[theme] siga
-//   resolviendo en drawBlock / drawGrid. El fork no toca document.documentElement
-//   ni localStorage.
+//   #theme-toggle). El fork no toca document.documentElement ni localStorage.
+// SPEC 10 (skins): THEME_COLORS/COLORS se sustituyen por SKINS (clasico/retro/
+//   neon). activeSkin es una variable mutable en memoria; window.setTetrisSkin
+//   la reasigna. La persistencia en localStorage vive solo en React
+//   (components/tetris-player.tsx), el fork nunca la toca.
 // El resto de game.js (collide, rotateCW, tryRotate, merge, clearLines,
 // LINE_SCORES, ghostY, hardDrop, softDrop, lockPiece, spawn, draw, drawGrid,
 // drawNext, loop y su temporización) no se toca.
@@ -22,16 +24,55 @@ const COLS = 10;
 const ROWS = 20;
 const BLOCK = 30;
 
-const COLORS = [
-  null,
-  "#4dd0e1", // I - cyan
-  "#ffd54f", // O - yellow
-  "#ba68c8", // T - purple
-  "#81c784", // S - green
-  "#e57373", // Z - red
-  "#90caf9", // J - pale blue
-  "#ffb74d", // L - orange
-];
+// SPEC 10: SKINS sustituye a COLORS/THEME_COLORS. Cada entrada define la
+// paleta de piezas y el aspecto del tablero para una skin seleccionable.
+const SKINS = {
+  clasico: {
+    pieceColors: [
+      null,
+      "#4dd0e1", // I - cyan
+      "#ffd54f", // O - yellow
+      "#ba68c8", // T - purple
+      "#81c784", // S - green
+      "#e57373", // Z - red
+      "#90caf9", // J - pale blue
+      "#ffb74d", // L - orange
+    ],
+    grid: "#22222e",
+    highlight: "rgba(255,255,255,0.12)",
+    glow: null,
+  },
+  retro: {
+    pieceColors: [
+      null,
+      "#8bac0f",
+      "#9bbc0f",
+      "#556b2f",
+      "#306230",
+      "#7a5c1e",
+      "#a67c27",
+      "#4f7942",
+    ],
+    grid: "#0d1f0d",
+    highlight: "rgba(139,172,15,0.20)",
+    glow: null,
+  },
+  neon: {
+    pieceColors: [
+      null,
+      "#4dd0e1",
+      "#ffd54f",
+      "#ba68c8",
+      "#81c784",
+      "#e57373",
+      "#90caf9",
+      "#ffb74d",
+    ],
+    grid: "#0a3a44",
+    highlight: "rgba(255,255,255,0.28)",
+    glow: { blur: 16, alpha: 0.9 },
+  },
+};
 
 const PIECES = [
   null,
@@ -74,19 +115,16 @@ const PIECES = [
 
 const LINE_SCORES = [0, 100, 300, 500, 800];
 
-const THEME_COLORS = {
-  dark: { grid: "#22222e", highlight: "rgba(255,255,255,0.12)" },
-  light: { grid: "#d4d4e2", highlight: "rgba(0,0,0,0.10)" },
-};
-
 function startTetris(boardEl, nextEl) {
   const canvas = boardEl;
   const ctx = canvas.getContext("2d");
   const nextCanvas = nextEl;
   const nextCtx = nextCanvas.getContext("2d");
 
-  // Cambio 3: el fork no lee ni escribe el tema; se fija a la paleta oscura.
-  const theme = "dark";
+  // SPEC 10: skin activa, mutable en memoria. window.setTetrisSkin la
+  // reasigna; draw() la lee en cada frame, así el cambio se refleja sin
+  // reiniciar la partida.
+  let activeSkin = "clasico";
 
   let board,
     current,
@@ -250,18 +288,26 @@ function startTetris(boardEl, nextEl) {
 
   function drawBlock(context, x, y, colorIndex, size, alpha) {
     if (!colorIndex) return;
-    const color = COLORS[colorIndex];
+    const skin = SKINS[activeSkin];
+    const color = skin.pieceColors[colorIndex];
     context.globalAlpha = alpha ?? 1;
     context.fillStyle = color;
+    if (skin.glow) {
+      context.shadowColor = color;
+      context.shadowBlur = skin.glow.blur;
+      context.globalAlpha = alpha ?? skin.glow.alpha;
+    }
     context.fillRect(x * size + 1, y * size + 1, size - 2, size - 2);
+    context.shadowBlur = 0;
+    context.globalAlpha = alpha ?? 1;
     // highlight
-    context.fillStyle = THEME_COLORS[theme].highlight;
+    context.fillStyle = skin.highlight;
     context.fillRect(x * size + 1, y * size + 1, size - 2, 4);
     context.globalAlpha = 1;
   }
 
   function drawGrid() {
-    ctx.strokeStyle = THEME_COLORS[theme].grid;
+    ctx.strokeStyle = SKINS[activeSkin].grid;
     ctx.lineWidth = 0.5;
     for (let c = 1; c < COLS; c++) {
       ctx.beginPath();
@@ -438,6 +484,20 @@ function startTetris(boardEl, nextEl) {
   // tecla P sigue alternando pausa igual que hoy.
   window.toggleTetrisPause = togglePause;
 
+  // SPEC 10: cambio de skin en caliente desde React. Mientras se juega,
+  // draw() ya corre en cada frame del rAF y leería activeSkin solo; pero en
+  // pausa loop() no llama a draw() (ver togglePause/loop), y drawNext() solo
+  // se invoca desde spawn(). Se fuerzan ambos redibujados aquí para que el
+  // tablero y el panel "next" reflejen la skin nueva de inmediato en
+  // cualquier fase (jugando o en pausa), sin esperar al siguiente evento.
+  function setSkin(skin) {
+    if (!SKINS[skin]) return;
+    activeSkin = skin;
+    draw();
+    drawNext();
+  }
+  window.setTetrisSkin = setSkin;
+
   // Cambio 1: stop() cancela el requestAnimationFrame en curso, quita el listener
   // de teclado que registró este arranque y elimina las funciones expuestas.
   return function stop() {
@@ -446,6 +506,7 @@ function startTetris(boardEl, nextEl) {
     if (window.restartTetris === init) delete window.restartTetris;
     if (window.toggleTetrisPause === togglePause)
       delete window.toggleTetrisPause;
+    if (window.setTetrisSkin === setSkin) delete window.setTetrisSkin;
   };
 }
 
