@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { guardarPuntuacionSnake } from "@/app/jugar/[slug]/actions";
 import { GameOverModal } from "@/components/game-over-modal";
+import { TouchControls, useIsTouchDevice } from "@/components/touch-controls";
 import type { Game } from "@/lib/games";
 
 declare global {
@@ -66,6 +67,7 @@ export function SnakePlayer({ game }: Props) {
   const [state, setState] = useState<GameState>(INITIAL_STATE);
   const [modalOpen, setModalOpen] = useState(false);
   const [modalScore, setModalScore] = useState(() => formatScore(0));
+  const isTouch = useIsTouchDevice();
 
   // onReady de next/script se dispara al cargar el script y también en cada
   // montaje posterior si ya estaba cargado (navegación SPA de vuelta a la ruta).
@@ -196,10 +198,24 @@ export function SnakePlayer({ game }: Props) {
         )}
       </div>
 
-      {/* Aviso discreto: teclado, sin controles táctiles. */}
-      <p className="mt-3 w-full max-w-5xl px-4 text-center font-body text-label-sm text-outline">
-        Requiere teclado: flechas para girar, P para pausar.
-      </p>
+      {/* SPEC 11: en dispositivos sin teclado físico, el overlay táctil
+          sustituye al aviso de teclado. Sin botón A: Space es un no-op en
+          este motor. */}
+      {isTouch ? (
+        <TouchControls
+          dpad={{
+            left: { code: "ArrowLeft", label: "Girar izquierda" },
+            right: { code: "ArrowRight", label: "Girar derecha" },
+            up: { code: "ArrowUp", label: "Girar arriba" },
+            down: { code: "ArrowDown", label: "Girar abajo" },
+          }}
+          actionB={{ code: "KeyP", label: "Pausa" }}
+        />
+      ) : (
+        <p className="mt-3 w-full max-w-5xl px-4 text-center font-body text-label-sm text-outline">
+          Requiere teclado: flechas para girar, P para pausar.
+        </p>
+      )}
 
       {/* Control deck (Pausa / Salir) + modal "Fin del juego" en modo controlado.
           "Salir" abre el modal con la puntuación vigente; el mensaje gameover lo

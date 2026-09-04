@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { guardarPuntuacionTetris } from "@/app/jugar/[slug]/actions";
 import { GameOverModal } from "@/components/game-over-modal";
+import { TouchControls, useIsTouchDevice } from "@/components/touch-controls";
 import type { Game } from "@/lib/games";
 
 declare global {
@@ -86,6 +87,7 @@ export function TetrisPlayer({ game }: Props) {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalScore, setModalScore] = useState(() => formatScore(0));
   const [skin, setSkin] = useState<TetrisSkin>(() => readStoredSkin());
+  const isTouch = useIsTouchDevice();
 
   // onReady de next/script se dispara al cargar el script y también en cada
   // montaje posterior si ya estaba cargado (navegación SPA de vuelta a la ruta).
@@ -258,10 +260,25 @@ export function TetrisPlayer({ game }: Props) {
         )}
       </div>
 
-      {/* Aviso discreto: el juego es solo teclado, sin controles táctiles. */}
-      <p className="mt-3 w-full max-w-5xl px-4 text-center font-body text-label-sm text-outline">
-        Requiere teclado: ←→ mover, ↑/X rotar, ↓ bajar, Espacio caída, P pausa.
-      </p>
+      {/* SPEC 11: en dispositivos sin teclado físico, el overlay táctil
+          sustituye al aviso de teclado. */}
+      {isTouch ? (
+        <TouchControls
+          dpad={{
+            left: { code: "ArrowLeft", label: "Mover izquierda" },
+            right: { code: "ArrowRight", label: "Mover derecha" },
+            up: { code: "ArrowUp", label: "Rotar" },
+            down: { code: "ArrowDown", label: "Soft drop" },
+          }}
+          actionA={{ code: "Space", label: "Hard drop" }}
+          actionB={{ code: "KeyP", label: "Pausa" }}
+        />
+      ) : (
+        <p className="mt-3 w-full max-w-5xl px-4 text-center font-body text-label-sm text-outline">
+          Requiere teclado: ←→ mover, ↑/X rotar, ↓ bajar, Espacio caída, P
+          pausa.
+        </p>
+      )}
 
       {/* Control deck (Pausa / Salir) + modal "Fin del juego" en modo controlado.
           "Salir" abre el modal con la puntuación vigente; el mensaje gameover lo

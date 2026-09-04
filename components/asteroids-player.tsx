@@ -4,6 +4,7 @@ import Script from "next/script";
 import { useEffect, useRef, useState } from "react";
 
 import { GameOverModal } from "@/components/game-over-modal";
+import { TouchControls, useIsTouchDevice } from "@/components/touch-controls";
 import type { Game } from "@/lib/games";
 
 declare global {
@@ -55,6 +56,7 @@ export function AsteroidsPlayer({ game }: Props) {
   const [state, setState] = useState<GameState>(INITIAL_STATE);
   const [modalOpen, setModalOpen] = useState(false);
   const [modalScore, setModalScore] = useState(() => formatScore(0));
+  const isTouch = useIsTouchDevice();
 
   // onReady de next/script se dispara al cargar el script y también en cada
   // montaje posterior si ya estaba cargado (navegación SPA de vuelta a la ruta).
@@ -173,10 +175,24 @@ export function AsteroidsPlayer({ game }: Props) {
         />
       </div>
 
-      {/* Aviso discreto: el juego es solo teclado, sin controles táctiles. */}
-      <p className="mt-3 w-full max-w-5xl px-4 text-center font-body text-label-sm text-outline">
-        Requiere teclado: flechas para rotar y propulsar, Espacio para disparar.
-      </p>
+      {/* SPEC 11: en dispositivos sin teclado físico, el overlay táctil
+          sustituye al aviso de teclado. Sin botón B: asteroids no tiene
+          pausa (SPEC 05). */}
+      {isTouch ? (
+        <TouchControls
+          dpad={{
+            left: { code: "ArrowLeft", label: "Girar izquierda" },
+            right: { code: "ArrowRight", label: "Girar derecha" },
+            up: { code: "ArrowUp", label: "Empuje" },
+          }}
+          actionA={{ code: "Space", label: "Disparo" }}
+        />
+      ) : (
+        <p className="mt-3 w-full max-w-5xl px-4 text-center font-body text-label-sm text-outline">
+          Requiere teclado: flechas para rotar y propulsar, Espacio para
+          disparar.
+        </p>
+      )}
 
       {/* Control deck (Pausa / Salir) + modal "Fin del juego" en modo controlado.
           "Salir" abre el modal con la puntuación vigente; el mensaje gameover lo

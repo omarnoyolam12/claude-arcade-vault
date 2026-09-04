@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { guardarPuntuacionArkanoid } from "@/app/jugar/[slug]/actions";
 import { GameOverModal } from "@/components/game-over-modal";
+import { TouchControls, useIsTouchDevice } from "@/components/touch-controls";
 import type { Game } from "@/lib/games";
 
 declare global {
@@ -58,6 +59,7 @@ export function ArkanoidPlayer({ game }: Props) {
   const [state, setState] = useState<GameState>(INITIAL_STATE);
   const [modalOpen, setModalOpen] = useState(false);
   const [modalScore, setModalScore] = useState(() => formatScore(0));
+  const isTouch = useIsTouchDevice();
 
   // onReady de next/script se dispara al cargar el script y también en cada
   // montaje posterior si ya estaba cargado (navegación SPA de vuelta a la ruta).
@@ -181,11 +183,26 @@ export function ArkanoidPlayer({ game }: Props) {
             porque su canvas no pinta HUD.) */}
       </div>
 
-      {/* Aviso discreto: teclado + ratón, sin controles táctiles. */}
-      <p className="mt-3 w-full max-w-5xl px-4 text-center font-body text-label-sm text-outline">
-        ←→ mueven la pala, Espacio empieza la partida y lanza la bola, P o Esc
-        pausan; además, mover el cursor sobre la pantalla mueve la pala.
-      </p>
+      {/* SPEC 11: en dispositivos sin teclado físico, el overlay táctil
+          sustituye al aviso de teclado. ↑↓ navegan los menús de inicio/pausa
+          (no hay pala verticalmente); A confirma esos menús y lanza la bola. */}
+      {isTouch ? (
+        <TouchControls
+          dpad={{
+            left: { code: "ArrowLeft", label: "Mover pala izquierda" },
+            right: { code: "ArrowRight", label: "Mover pala derecha" },
+            up: { code: "ArrowUp", label: "Navegar menú arriba" },
+            down: { code: "ArrowDown", label: "Navegar menú abajo" },
+          }}
+          actionA={{ code: "Space", label: "Lanzar bola / confirmar" }}
+          actionB={{ code: "KeyP", label: "Pausa" }}
+        />
+      ) : (
+        <p className="mt-3 w-full max-w-5xl px-4 text-center font-body text-label-sm text-outline">
+          ←→ mueven la pala, Espacio empieza la partida y lanza la bola, P o Esc
+          pausan; además, mover el cursor sobre la pantalla mueve la pala.
+        </p>
+      )}
 
       {/* Control deck (Pausa / Salir) + modal "Fin del juego" en modo controlado.
           "Salir" abre el modal con la puntuación vigente; el mensaje gameover lo
