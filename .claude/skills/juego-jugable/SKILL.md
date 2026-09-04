@@ -109,7 +109,7 @@ Same mechanics as `/spec`'s Phase 4:
 5. State starts as `Draft`. Never mark it `Approved` automatically.
 6. Verify every spec named in `Depends on` actually exists in `specs/`.
 7. Leave `specs/.spec-config.yml` untouched if it exists; this skill never creates it (that responsibility belongs to `/spec`, which already ran once in this repo).
-8. Confirm to the user: file path, `Draft` state reminder, and that `/spec-impl NN-<slug>-jugable` is the next step once reviewed and approved. **Stop there** — do not propose implementing anything yourself.
+8. Confirm to the user: file path, `Draft` state reminder, and that `/spec-impl NN-<slug>-jugable` is the next step once reviewed and approved. **Stop there** — do not propose implementing anything yourself. Once that implementation lands, mention that the recommended next step is invoking the `skin-designer` agent (Modo B) on this slug, to verify the game actually offers 3 selectable skins (neon/retro/clásico) — do not run it yourself.
 
 ## Hard rules
 
