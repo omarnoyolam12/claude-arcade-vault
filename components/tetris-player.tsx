@@ -20,10 +20,34 @@ declare global {
     // pausan el motor sin recrear los <canvas>.
     restartTetris?: () => void;
     toggleTetrisPause?: () => void;
+    // SPEC 10: cambia la skin activa en memoria; no reinicia la partida.
+    setTetrisSkin?: (skin: TetrisSkin) => void;
   }
 }
 
 type Phase = "playing" | "paused" | "gameover";
+
+type TetrisSkin = "clasico" | "retro" | "neon";
+
+const SKIN_STORAGE_KEY = "tetris-skin";
+const SKIN_OPTIONS: { value: TetrisSkin; label: string }[] = [
+  { value: "clasico", label: "Clásico" },
+  { value: "retro", label: "Retro" },
+  { value: "neon", label: "Neon" },
+];
+
+function isTetrisSkin(value: unknown): value is TetrisSkin {
+  return value === "clasico" || value === "retro" || value === "neon";
+}
+
+function readStoredSkin(): TetrisSkin {
+  try {
+    const stored = window.localStorage.getItem(SKIN_STORAGE_KEY);
+    return isTetrisSkin(stored) ? stored : "clasico";
+  } catch {
+    return "clasico";
+  }
+}
 
 type GameState = {
   score: number;
@@ -61,6 +85,7 @@ export function TetrisPlayer({ game }: Props) {
   const [state, setState] = useState<GameState>(INITIAL_STATE);
   const [modalOpen, setModalOpen] = useState(false);
   const [modalScore, setModalScore] = useState(() => formatScore(0));
+  const [skin, setSkin] = useState<TetrisSkin>(() => readStoredSkin());
 
   // onReady de next/script se dispara al cargar el script y también en cada
   // montaje posterior si ya estaba cargado (navegación SPA de vuelta a la ruta).
@@ -73,6 +98,20 @@ export function TetrisPlayer({ game }: Props) {
     )
       return;
     stopRef.current = window.startTetris(boardRef.current, nextRef.current);
+    // El motor siempre nace en "clasico": se sincroniza con la preferencia
+    // guardada apenas arranca.
+    window.setTetrisSkin?.(skin);
+  }
+
+  function handleSkinChange(nextSkin: TetrisSkin) {
+    setSkin(nextSkin);
+    window.setTetrisSkin?.(nextSkin);
+    try {
+      window.localStorage.setItem(SKIN_STORAGE_KEY, nextSkin);
+    } catch {
+      // localStorage no disponible (p. ej. Safari en modo privado): se
+      // ignora, la skin sigue funcionando solo para esta sesión.
+    }
   }
 
   useEffect(() => {
@@ -120,7 +159,7 @@ export function TetrisPlayer({ game }: Props) {
       {/* HUD del reproductor — mismo marcado y clases que la maqueta, leyendo del
           estado real del juego. El tercer bloque muestra LÍNEAS y NIVEL (sin
           corazones de "vidas": Tetris no tiene vidas). */}
-      <div className="mb-4 flex w-full max-w-5xl items-end justify-between px-4">
+      <div className="mb-4 flex w-full max-w-5xl flex-wrap items-end justify-between gap-y-3 px-4">
         <div className="flex flex-col">
           <span className="font-body text-label-sm uppercase tracking-[0.1em] text-tertiary">
             Jugador 1
@@ -149,6 +188,28 @@ export function TetrisPlayer({ game }: Props) {
               LVL {state.level}
             </span>
           </div>
+        </div>
+        <div className="flex flex-col items-end">
+          <label
+            htmlFor="tetris-skin-select"
+            className="font-body text-label-sm uppercase tracking-[0.1em] text-tertiary"
+          >
+            Skin
+          </label>
+          <select
+            id="tetris-skin-select"
+            value={skin}
+            onChange={(event) =>
+              handleSkinChange(event.target.value as TetrisSkin)
+            }
+            className="rounded border border-outline-variant bg-black px-2 py-1 font-body text-label-md uppercase text-primary-fixed"
+          >
+            {SKIN_OPTIONS.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
         </div>
       </div>
 
