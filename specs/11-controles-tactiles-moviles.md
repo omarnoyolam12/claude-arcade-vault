@@ -1,6 +1,6 @@
 # SPEC 11 — Controles táctiles para jugar en móvil
 
-> **Status:** Aprobado
+> **Status:** Implementado
 > **Depends on:** SPEC 05, SPEC 07, SPEC 08, SPEC 09
 > **Date:** 2026-09-04
 > **Objective:** Añadir un overlay táctil de D-pad + dos botones de acción a los cuatro reproductores jugables (asteroids, tetris, arkanoid, snake), visible solo en dispositivos sin teclado físico, que despacha `KeyboardEvent` sintéticos hacia los mismos `game.js` sin tocarlos.
