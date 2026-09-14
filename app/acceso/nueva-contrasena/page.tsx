@@ -1,18 +1,6 @@
-import { AuthTabs } from "@/components/auth-tabs";
+import { NewPasswordForm } from "@/components/new-password-form";
 
-const ERROR_MESSAGES: Record<string, string> = {
-  callback: "El enlace no es válido o ya caducó. Inténtalo de nuevo.",
-  oauth: "No se pudo iniciar sesión con ese proveedor. Inténtalo de nuevo.",
-};
-
-export default async function AccesoPage({
-  searchParams,
-}: PageProps<"/acceso">) {
-  const params = await searchParams;
-  const errorParam =
-    typeof params.error === "string" ? params.error : undefined;
-  const errorMessage = errorParam ? ERROR_MESSAGES[errorParam] : undefined;
-
+export default function NuevaContrasenaPage() {
   return (
     <div className="relative flex min-h-[100dvh] items-center justify-center overflow-hidden bg-void px-margin py-12">
       {/* Cyber-grid en perspectiva */}
@@ -37,20 +25,27 @@ export default async function AccesoPage({
             Arcade Vault
           </h1>
           <p className="mt-4 font-body text-label-lg uppercase tracking-[0.2em] text-primary-fixed">
-            Insert Coin to Continue
+            Elige tu nueva contraseña
           </p>
         </div>
 
-        {errorMessage && (
-          <p
-            role="alert"
-            className="mb-8 border-2 border-error bg-[rgba(255,180,171,0.08)] px-4 py-3 font-body text-label-sm uppercase tracking-widest text-error"
-          >
-            {errorMessage}
-          </p>
-        )}
+        <div className="relative">
+          {/* Bezel arcade */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute -inset-4 -z-10 border-[16px] border-[#080808] shadow-[0_20px_50px_rgba(0,0,0,0.9),inset_0_2px_10px_rgba(255,255,255,0.05),inset_0_0_30px_rgba(0,0,0,1)]"
+          />
 
-        <AuthTabs />
+          <div className="relative z-10 border border-primary-fixed-dim bg-[rgba(5,5,8,0.85)] p-10 shadow-[0_0_40px_rgba(0,220,229,0.2)] backdrop-blur-md sm:p-12">
+            {/* Scanlines de la tarjeta */}
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(99,247,255,0.03)_2px,rgba(99,247,255,0.03)_4px)]"
+            />
+
+            <NewPasswordForm />
+          </div>
+        </div>
       </main>
     </div>
   );

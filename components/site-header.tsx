@@ -1,5 +1,9 @@
 import Link from "next/link";
 
+import { cerrarSesion } from "@/app/acceso/actions";
+import { getDisplayName } from "@/lib/auth";
+import { createClient } from "@/lib/supabase/server";
+
 import { MobileNav } from "./mobile-nav";
 import { VaultMark } from "./vault-mark";
 
@@ -20,10 +24,19 @@ function navLinkClass(isActive: boolean) {
 }
 
 /** Cabecera fija compartida. La variante "back" se usa en el detalle del juego. */
-export function SiteHeader({ active, variant = "nav" }: Props) {
+export async function SiteHeader({ active, variant = "nav" }: Props) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const displayName = user ? getDisplayName(user) : undefined;
+
   return (
     <header className="fixed left-0 top-0 z-50 flex h-20 w-full items-center justify-between border-b-2 border-primary-fixed-dim bg-background px-margin shadow-[0_0_20px_rgba(0,220,229,0.4)]">
-      <Link href="/" className="transition-all hover:drop-shadow-[0_0_10px_#63f7ff]">
+      <Link
+        href="/"
+        className="transition-all hover:drop-shadow-[0_0_10px_#63f7ff]"
+      >
         <VaultMark size="md" />
       </Link>
 
@@ -71,14 +84,35 @@ export function SiteHeader({ active, variant = "nav" }: Props) {
             </Link>
           </nav>
 
-          <Link
-            href="/acceso"
-            className="hidden font-body text-body-lg uppercase text-primary-fixed transition-all hover:drop-shadow-[0_0_8px_#63f7ff] md:block"
-          >
-            Acceder
-          </Link>
+          {user ? (
+            <form
+              action={cerrarSesion}
+              className="hidden items-center gap-4 md:flex"
+            >
+              <span className="font-body text-body-lg uppercase text-primary-fixed">
+                {displayName}
+              </span>
+              <button
+                type="submit"
+                className="font-body text-body-lg uppercase text-outline transition-colors hover:text-primary-fixed cursor-pointer"
+              >
+                Cerrar sesión
+              </button>
+            </form>
+          ) : (
+            <Link
+              href="/acceso"
+              className="hidden font-body text-body-lg uppercase text-primary-fixed transition-all hover:drop-shadow-[0_0_8px_#63f7ff] md:block"
+            >
+              Acceder
+            </Link>
+          )}
 
-          <MobileNav active={active} />
+          <MobileNav
+            active={active}
+            isAuthenticated={Boolean(user)}
+            displayName={displayName}
+          />
         </>
       )}
     </header>

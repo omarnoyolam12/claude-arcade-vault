@@ -3,20 +3,24 @@
 import Link from "next/link";
 import { useState } from "react";
 
+import { cerrarSesion } from "@/app/acceso/actions";
+
 const LINKS = [
   { href: "/", label: "Inicio", key: "inicio" },
   { href: "/juegos", label: "Biblioteca", key: "juegos" },
   { href: "/salon-de-la-fama", label: "Salón de la Fama", key: "salon" },
   { href: "/acerca-de", label: "Acerca de", key: "acerca" },
-  { href: "/acceso", label: "Acceder", key: "acceso" },
 ] as const;
 
 type Props = {
   active?: "inicio" | "juegos" | "salon" | "acerca";
+  /** Estado de sesión, calculado en `SiteHeader` (Server Component). */
+  isAuthenticated?: boolean;
+  displayName?: string;
 };
 
 /** Menú móvil: el botón hamburguesa abre y cierra la lista de enlaces. */
-export function MobileNav({ active }: Props) {
+export function MobileNav({ active, isAuthenticated, displayName }: Props) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -26,7 +30,7 @@ export function MobileNav({ active }: Props) {
         aria-label={open ? "Cerrar menú" : "Abrir menú"}
         aria-expanded={open}
         onClick={() => setOpen((value) => !value)}
-        className="flex h-10 w-10 items-center justify-center text-primary-fixed transition-transform active:scale-95"
+        className="flex h-10 w-10 cursor-pointer items-center justify-center text-primary-fixed transition-transform active:scale-95"
       >
         {open ? (
           <svg
@@ -72,6 +76,32 @@ export function MobileNav({ active }: Props) {
               </Link>
             );
           })}
+
+          {isAuthenticated ? (
+            <form
+              action={cerrarSesion}
+              className="flex items-center justify-between gap-4"
+            >
+              <span className="font-body text-body-lg uppercase text-primary-fixed">
+                {displayName}
+              </span>
+              <button
+                type="submit"
+                onClick={() => setOpen(false)}
+                className="cursor-pointer font-body text-body-lg uppercase text-outline transition-colors hover:text-primary-fixed"
+              >
+                Cerrar sesión
+              </button>
+            </form>
+          ) : (
+            <Link
+              href="/acceso"
+              onClick={() => setOpen(false)}
+              className="font-body text-body-lg uppercase text-outline transition-colors hover:text-primary-fixed"
+            >
+              Acceder
+            </Link>
+          )}
         </nav>
       )}
     </div>
