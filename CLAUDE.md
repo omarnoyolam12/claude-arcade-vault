@@ -76,6 +76,7 @@ Componentes de juego: `asteroids-player`, `tetris-player`, `arkanoid-player`, `s
 
 - **`/frontend-design`** — úsala siempre para diseñar la interfaz de usuario.
 - **`/spec`** y **`/spec-impl`** — flujo Spec Driven Design con los skills de `Klerith/fernando-skills` (`npx skills@latest add Klerith/fernando-skills`). `/spec` redacta la especificación en `specs/NN-*.md`; `/spec-impl` crea la rama `spec-NN-slug` (config en `specs/.spec-config.yml`) y la implementa por pasos.
+- **`/spec-impl-game`** (skill local, `.claude/skills/spec-impl-game/`) — como `/spec-impl` (delega en ella, mismas 4 fases), pero pensado para specs de juego jugable (SPEC 05/07/08/09); al terminar la implementación lanza los agentes `skin-designer` y `mobile-porter` en secuencia (nunca en paralelo) para auditar el juego recién portado.
 - **`/juego-jugable`** (skill local, `.claude/skills/juego-jugable/`) — hermana especializada de `/spec` para el caso "hacer jugable un juego + leaderboard escribible en Supabase". Redacta el spec siguiendo el patrón SPEC 05 + SPEC 06; no escribe código.
 
 Skills instaladas: `skills-lock.json`. Specs existentes: `specs/` (01 pantallas → 09 snake).

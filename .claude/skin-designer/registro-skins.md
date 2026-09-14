@@ -6,9 +6,10 @@ mismo juego sin justificarlo.
 
 ## Índice
 
-| Fecha      | Juego  | Modo | Veredicto | Estado                    |
-| ---------- | ------ | ---- | --------- | ------------------------- |
-| 2026-09-04 | Tetris | B    | Pasa      | Implementado y verificado |
+| Fecha      | Juego   | Modo | Veredicto | Estado                        |
+| ---------- | ------- | ---- | --------- | ----------------------------- |
+| 2026-09-04 | Tetris  | B    | Pasa      | Implementado y verificado     |
+| 2026-09-14 | Frogger | B    | No pasa   | Verificado — brecha pendiente |
 
 ## Formato de entrada
 
@@ -43,3 +44,21 @@ mismo juego sin justificarlo.
 - **Riesgos técnicos:** el propio `game.js` documenta (comentario líneas 15-18 y SPEC 10 "Riesgos identificados") el costo de `ctx.shadowBlur` en la skin neon sobre ~200 bloques; mitigado con `blur: 16` moderado y reseteo fuera de los bloques. No se detectó otro riesgo sobre el contrato `window.start<Slug>`/`stop()`/`postMessage`.
 - **Estado:** Implementado y verificado
 - **Notas:** Primer juego jugable con sistema de skins real del catálogo (patrón de referencia para `asteroids`, `arkanoid`, `snake`, documentado en `.claude/agents/skin-designer.md`). Confirmado que `.claude/agents/skin-designer.md` ya incluye la sección "Patrón de referencia (SPEC 10 — Tetris)" citada como origen.
+
+## 2026-09-14 — Frogger (Modo B)
+
+- **Modo:** B (Verificación)
+- **Veredicto:** No pasa — el sistema de skins simplemente no existe todavía; ni selector en la UI, ni parámetro de skin en el motor, ni una segunda paleta en ningún lado del fork.
+- **Skins propuestas/encontradas:** Ninguna. Solo hay una paleta fija (la "clásica" de facto):
+  - `public/games/frogger/game.js:336-341` — `COLOR_FILA` (`casas: "#0a1f14"`, `rio: "#052033"`, `segura: "#0a0a12"`, `carretera: "#150a1f"`), constante única, sin variantes.
+  - `public/games/frogger/game.js:362-366` — `COLOR_ENTIDAD` (`coche: "#ff3d81"`, `tronco: "#a9662b"`, `tortuga: "#31d977"`), también constante única.
+  - Rana (`dibujarRana`, línea 417-423) y casas ocupadas (`dibujarCasas`, línea 402-415) usan el hex `#8affc1` embebido directamente en las llamadas a `ctx.fillStyle`, ni siquiera extraído a una constante nombrada.
+- **Evidencia de la brecha (contraste directo con el patrón de Tetris, SPEC 10):**
+  1. **Sin mapa de skins en el motor.** No existe ningún equivalente a `SKINS = { clasico, retro, neon }` en `public/games/frogger/game.js`. `COLOR_FILA`/`COLOR_ENTIDAD` son objetos planos de un solo nivel, no un mapa de paletas.
+  2. **Sin contrato `window.setFroggerSkin`.** El bloque de funciones globales expuestas (líneas 476-488: `window.restartFrogger`, `window.toggleFroggerPause`, y su limpieza en `stop()`) no incluye ningún setter de skin. `dibujar()` (línea 436-442) llama directamente a `dibujarFondo`/`dibujarCasas`/`dibujarFilasPeligro`/`dibujarRana`/`dibujarTemporizador` sin indirección de paleta activa.
+  3. **Sin `<select>` en el HUD.** `components/frogger-player.tsx` no tiene ningún `<select>`, `SKIN_OPTIONS`, `readStoredSkin`, ni referencia a `localStorage` con clave `frogger-skin`. El HUD (líneas 121-165) solo muestra jugador, puntuación, casas, vidas y nivel; no hay ningún control de personalización visual en el "control deck" ni sobre el gabinete.
+  4. **Sin persistencia.** No hay lectura/escritura de `localStorage` en ningún punto del componente (a diferencia de `readStoredSkin`/`handleSkinChange` en `tetris-player.tsx`).
+  5. Confirmado además contra el catálogo (`supabase/migrations/0001_create_games.sql`) y `lib/games.ts`: ninguno de los dos define ni ha definido nunca un campo de skin/tema por juego, así que tampoco hay una fuente de verdad de catálogo que el reproductor pudiera estar leyendo en su lugar.
+- **Riesgos técnicos:** ninguno nuevo que señalar sobre el contrato `window.startFrogger`/`stop()`/`postMessage` — está intacto y no se tocó nada; el riesgo es puramente de alcance (la spec de portado, `specs/game-jam/frogger/01-frogger-jugable.md`, es de tipo `/juego-jugable` y nunca prometió skins, así que la brecha es esperable, no un bug de implementación).
+- **Estado:** Verificado — brecha pendiente
+- **Notas:** Recomendado abrir una spec de skins específica para Frogger, calcada del patrón SPEC 10 — Tetris: un mapa `SKINS = { clasico, retro, neon }` en `game.js` con paleta por fila (`casas`/`rio`/`segura`/`carretera`) y por entidad (`coche`/`tronco`/`tortuga`) más color de rana/casas ocupadas, un `window.setFroggerSkin(skin)` que fuerce `dibujar()` inmediatamente (incluida pausa, igual que el matiz documentado para Tetris), y un `<select>` en `components/frogger-player.tsx` con persistencia en `localStorage["frogger-skin"]`. Como Frogger no usa sprites ni spritesheet (todo es `ctx.fillRect`/`ctx.arc`), el patrón de Tetris aplica casi sin fricción; no se detectó necesidad de Modo A por separado — la propuesta de diseño puede vivir directamente en la spec `/spec` recomendada.

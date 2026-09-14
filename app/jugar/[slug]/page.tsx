@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 
 import { ArkanoidPlayer } from "@/components/arkanoid-player";
 import { AsteroidsPlayer } from "@/components/asteroids-player";
+import { FroggerPlayer } from "@/components/frogger-player";
 import { GameOverModal } from "@/components/game-over-modal";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
@@ -22,13 +23,15 @@ export default async function ReproductorPage({
   const game = await getGame(slug);
   if (!game) notFound();
 
-  // SPEC 05 / 07 / 08 / 09 — asteroids, tetris, arkanoid y snake son jugables de
-  // verdad; el resto sigue siendo maqueta.
+  // SPEC 05 / 07 / 08 / 09 / game-jam/frogger/01 — asteroids, tetris,
+  // arkanoid, snake y frogger son jugables de verdad; el resto sigue siendo
+  // maqueta.
   if (
     slug === "asteroids" ||
     slug === "tetris" ||
     slug === "arkanoid" ||
-    slug === "snake"
+    slug === "snake" ||
+    slug === "frogger"
   ) {
     return (
       <div className="flex min-h-[100dvh] flex-col overflow-hidden">
@@ -40,8 +43,10 @@ export default async function ReproductorPage({
             <TetrisPlayer game={game} />
           ) : slug === "arkanoid" ? (
             <ArkanoidPlayer game={game} />
-          ) : (
+          ) : slug === "snake" ? (
             <SnakePlayer game={game} />
+          ) : (
+            <FroggerPlayer game={game} />
           )}
         </main>
         <SiteFooter />
