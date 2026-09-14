@@ -1,6 +1,6 @@
 # SPEC game-jam/frogger/01 — Frogger jugable en `/jugar/frogger` con guardado de puntuación
 
-> **Status:** Borrador
+> **Status:** Aprobado
 > **Depends on:** SPEC 05, SPEC 06
 > **Date:** 2026-09-04
 > **Objective:** Poner un Frogger de rejilla jugable de verdad en `/jugar/frogger` (cruzar una carretera de tráfico y un río de troncos/tortugas hasta las cinco casas), escrito desde cero como `public/games/frogger/game.js`, con el HUD React del reproductor sincronizado por `postMessage` y "Guardar puntuación" insertando en `public.scores`.

@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675">
+  <rect width="1200" height="675" fill="#05070c"/>
+
+  <!-- Carretera -->
+  <rect x="0" y="420" width="1200" height="255" fill="#150a1f"/>
+  <g fill="#ff3d81">
+    <rect x="60" y="450" width="130" height="46"/>
+    <rect x="320" y="450" width="130" height="46"/>
+    <rect x="580" y="450" width="130" height="46"/>
+    <rect x="840" y="450" width="130" height="46"/>
+    <rect x="1030" y="450" width="130" height="46"/>
+    <rect x="160" y="530" width="150" height="46"/>
+    <rect x="440" y="530" width="150" height="46"/>
+    <rect x="720" y="530" width="150" height="46"/>
+    <rect x="990" y="530" width="150" height="46"/>
+    <rect x="90" y="610" width="140" height="46"/>
+    <rect x="360" y="610" width="140" height="46"/>
+    <rect x="630" y="610" width="140" height="46"/>
+    <rect x="900" y="610" width="140" height="46"/>
+  </g>
+
+  <!-- Rana -->
+  <rect x="565" y="360" width="70" height="46" fill="#8affc1"/>
+
+  <!-- Refugio -->
+  <rect x="0" y="310" width="1200" height="40" fill="#0a0a12"/>
+
+  <!-- Rio -->
+  <rect x="0" y="90" width="1200" height="220" fill="#052033"/>
+  <g fill="#a9662b">
+    <rect x="40" y="120" width="220" height="46"/>
+    <rect x="360" y="120" width="220" height="46"/>
+    <rect x="680" y="120" width="220" height="46"/>
+    <rect x="1000" y="120" width="220" height="46"/>
+    <rect x="120" y="240" width="260" height="46"/>
+    <rect x="500" y="240" width="260" height="46"/>
+    <rect x="880" y="240" width="260" height="46"/>
+  </g>
+  <g fill="#31d977">
+    <circle cx="150" cy="203" r="20"/>
+    <circle cx="196" cy="203" r="20"/>
+    <circle cx="470" cy="203" r="20"/>
+    <circle cx="516" cy="203" r="20"/>
+    <circle cx="790" cy="203" r="20"/>
+    <circle cx="836" cy="203" r="20"/>
+  </g>
+
+  <!-- Casas -->
+  <rect x="0" y="0" width="1200" height="90" fill="#0a1f14"/>
+  <g fill="none" stroke="#8affc1" stroke-width="4">
+    <rect x="70" y="18" width="70" height="54"/>
+    <rect x="300" y="18" width="70" height="54"/>
+    <rect x="565" y="18" width="70" height="54"/>
+    <rect x="830" y="18" width="70" height="54"/>
+    <rect x="1060" y="18" width="70" height="54"/>
+  </g>
+
+  <text x="600" y="52" text-anchor="middle" font-family="monospace" font-size="34" fill="#63f7ff" letter-spacing="6">FROGGER</text>
+</svg>
