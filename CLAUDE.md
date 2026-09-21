@@ -40,6 +40,7 @@ Un hook `PostToolUse` (`.claude/settings.json`) corre `prettier --write` y `esli
 - **Fuentes** (`next/font/google`, expuestas como CSS variables desde el layout raíz): `Anybody` (`--font-anybody`, titulares), `Courier Prime` (`--font-courier-prime`, cuerpo/datos), `Press Start 2P` (`--font-press-start`, acento arcade: hero y rótulos `// NN`).
 - **Alias de imports**: `@/*` resuelve a la raíz del repo (`tsconfig.json`).
 - **Imágenes remotas**: `next.config.ts` solo permite `lh3.googleusercontent.com` en `images.remotePatterns`.
+- **Headers de seguridad**: `next.config.ts` define `securityHeaders` (`X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy: strict-origin-when-cross-origin`) aplicados a `/(.*)` vía `headers()` (SPEC 13).
 
 ## Supabase (SPEC 04 / 06)
 
@@ -58,8 +59,13 @@ Backend de catálogo y puntuaciones. **Aún no hay auth**: todo se hace con la c
   - `0001_create_games.sql` — `public.games`, RLS con lectura pública, seed de juegos.
   - `0002_create_scores.sql` — `public.scores` (FK a `games.slug`), RLS con lectura pública, seed de leaderboards históricos.
   - `0003_scores_allow_anon_insert.sql` — política `anon_insert_scores`: `INSERT` para `anon` con `with check (achieved_at is null and score > 0 and player <> '')`. Sin UPDATE/DELETE.
+  - `0005_revoke_rls_auto_enable_execute.sql` — revoca `EXECUTE` de `public.rls_auto_enable()` (event trigger de auto-RLS de la plataforma, `SECURITY DEFINER`) para `PUBLIC` (cubre implícitamente `anon` y `authenticated`, que heredan de `PUBLIC`). Remediación del advisor de seguridad `anon_security_definer_function_executable` / `authenticated_security_definer_function_executable`. No modifica la definición de la función ni las políticas RLS de `games`/`scores`.
 - **Variables de entorno**: ver `.env.template`. Las `NEXT_PUBLIC_SUPABASE_*` se exponen al navegador (respetan RLS); `SUPABASE_SECRET_KEY` se documenta pero ningún archivo de runtime la lee todavía.
 - **MCP**: `.mcp.json` registra el servidor `supabase` (HTTP), habilitado en `.claude/settings.local.json`.
+- **Ajustes de Supabase Auth pendientes (precondición manual, SPEC 13)**: los siguientes 3 ajustes solo existen en el dashboard de Supabase (Authentication → Policies / Rate Limits) o vía su Management API; este repo no tiene `supabase/config.toml` ni ningún tool de MCP que los exponga, así que **no se ejecutan desde aquí**:
+  - Mínimo de longitud de contraseña: configurar a **8 caracteres**.
+  - Leaked password protection (chequeo contra HaveIBeenPwned): **activar**. Hoy sigue reportándose como WARN `auth_leaked_password_protection` en `mcp__supabase__get_advisors(type: "security")`.
+  - Límite de signups por IP: **activar/configurar**.
 
 ## Juegos jugables (SPEC 05 / 07 / 08 / 09)
 
