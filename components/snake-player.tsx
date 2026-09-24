@@ -37,13 +37,15 @@ const INITIAL_STATE: GameState = {
   phase: "playing",
 };
 
-// Etiqueta fija: no hay auth en esta spec.
+// Etiqueta de invitado: se usa cuando no hay sesión iniciada.
 const PLAYER_LABEL = "G4M3R_X";
 
 const formatScore = (score: number) => String(score).padStart(7, "0");
 
 type Props = {
   game: Game;
+  isAuthenticated: boolean;
+  displayName?: string;
 };
 
 /**
@@ -60,7 +62,7 @@ type Props = {
  * El modal "Fin del juego" se abre solo al recibir un mensaje type:"gameover" y
  * también con el botón "Salir"; "Guardar puntuación" inserta en public.scores.
  */
-export function SnakePlayer({ game }: Props) {
+export function SnakePlayer({ game, isAuthenticated, displayName }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const stopRef = useRef<(() => void) | null>(null);
   const readyRef = useRef({ sprites: false, game: false });
@@ -68,6 +70,7 @@ export function SnakePlayer({ game }: Props) {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalScore, setModalScore] = useState(() => formatScore(0));
   const isTouch = useIsTouchDevice();
+  const player = isAuthenticated && displayName ? displayName : PLAYER_LABEL;
 
   // onReady de next/script se dispara al cargar el script y también en cada
   // montaje posterior si ya estaba cargado (navegación SPA de vuelta a la ruta).
@@ -140,7 +143,7 @@ export function SnakePlayer({ game }: Props) {
             Jugador 1
           </span>
           <span className="font-display text-headline-md uppercase text-primary-fixed drop-shadow-[0_0_5px_#63f7ff]">
-            {PLAYER_LABEL}
+            {player}
           </span>
         </div>
         <div className="flex flex-col items-center">
@@ -224,7 +227,7 @@ export function SnakePlayer({ game }: Props) {
           "Pausa" alterna la pausa nativa; "Guardar puntuación" inserta en
           public.scores vía la Server Action. */}
       <GameOverModal
-        player={PLAYER_LABEL}
+        player={player}
         finalScore={modalScore}
         open={modalOpen}
         onOpenChange={(next) => {
@@ -237,6 +240,7 @@ export function SnakePlayer({ game }: Props) {
         }}
         onPause={() => window.toggleSnakePause?.()}
         onSave={() => guardarPuntuacionSnake({ score: state.score })}
+        canSave={isAuthenticated}
       />
     </>
   );

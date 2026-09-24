@@ -13,9 +13,9 @@ El scaffold de `create-next-app` ya está reemplazado por producto real. Lo que 
 - **Home** (`app/page.tsx`): hero, stats, feed de "Actividad en vivo" (mock, `lib/activity.ts`), grid de juegos y CTA de acceso.
 - **Biblioteca de juegos** (`app/juegos/page.tsx`) y **detalle** (`app/juegos/[slug]/page.tsx`): catálogo leído de Supabase.
 - **Salón de la Fama** (`app/salon-de-la-fama/page.tsx`): leaderboards por juego leídos de Supabase.
-- **Acceso** (`app/acceso/page.tsx`): autenticación real vía Supabase Auth (SPEC 12) — login/registro por email+contraseña con confirmación de correo obligatoria, OAuth con Google y GitHub, recuperación de contraseña (`app/acceso/restablecer/`, `app/acceso/nueva-contrasena/`) y estado de sesión en el header global (`components/site-header.tsx`, `components/mobile-nav.tsx`). Server Actions en `app/acceso/actions.ts`, callback compartido en `app/auth/callback/route.ts`. Las puntuaciones del Salón de la Fama siguen sin vincularse al usuario autenticado.
+- **Acceso** (`app/acceso/page.tsx`): autenticación real vía Supabase Auth (SPEC 12) — login/registro por email+contraseña con confirmación de correo obligatoria, OAuth con Google y GitHub, recuperación de contraseña (`app/acceso/restablecer/`, `app/acceso/nueva-contrasena/`) y estado de sesión en el header global (`components/site-header.tsx`, `components/mobile-nav.tsx`). Server Actions en `app/acceso/actions.ts`, callback compartido en `app/auth/callback/route.ts`. Las puntuaciones del Salón de la Fama están vinculadas al usuario autenticado (SPEC 14, `scores.user_id`) y se resaltan como "TU MEJOR MARCA" para quien tiene sesión iniciada.
 - **Acerca de + Contacto** (`app/acerca-de/`): formulario con Server Action que envía correo vía **Resend** (`app/acerca-de/actions.ts`).
-- **Reproductor** (`app/jugar/[slug]/page.tsx`): `asteroids`, `tetris`, `arkanoid` y `snake` son **jugables de verdad** con guardado real de puntuación; el resto de slugs sigue siendo maqueta CRT.
+- **Reproductor** (`app/jugar/[slug]/page.tsx`): `asteroids`, `tetris`, `arkanoid` y `snake` son **jugables de verdad**; el resto de slugs sigue siendo maqueta CRT. Guardar la puntuación (SPEC 14) requiere sesión iniciada: sin ella "Guardar puntuación" aparece deshabilitado con una invitación a iniciar sesión, y jugar sigue sin requerir cuenta.
 
 ## Comandos
 

@@ -3,6 +3,7 @@
 import Script from "next/script";
 import { useEffect, useRef, useState } from "react";
 
+import { guardarPuntuacionAsteroids } from "@/app/jugar/[slug]/actions";
 import { GameOverModal } from "@/components/game-over-modal";
 import { TouchControls, useIsTouchDevice } from "@/components/touch-controls";
 import type { Game } from "@/lib/games";
@@ -35,13 +36,15 @@ const INITIAL_STATE: GameState = {
   phase: "playing",
 };
 
-// Etiqueta fija: no hay auth en esta spec.
+// Etiqueta de invitado: se usa cuando no hay sesión iniciada.
 const PLAYER_LABEL = "G4M3R_X";
 
 const formatScore = (score: number) => String(score).padStart(7, "0");
 
 type Props = {
   game: Game;
+  isAuthenticated: boolean;
+  displayName?: string;
 };
 
 /**
@@ -50,13 +53,14 @@ type Props = {
  * real del juego vía window.postMessage. El modal "Fin del juego" se abre solo
  * al recibir un mensaje type:"gameover" y también con el botón "Salir".
  */
-export function AsteroidsPlayer({ game }: Props) {
+export function AsteroidsPlayer({ game, isAuthenticated, displayName }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const stopRef = useRef<(() => void) | null>(null);
   const [state, setState] = useState<GameState>(INITIAL_STATE);
   const [modalOpen, setModalOpen] = useState(false);
   const [modalScore, setModalScore] = useState(() => formatScore(0));
   const isTouch = useIsTouchDevice();
+  const player = isAuthenticated && displayName ? displayName : PLAYER_LABEL;
 
   // onReady de next/script se dispara al cargar el script y también en cada
   // montaje posterior si ya estaba cargado (navegación SPA de vuelta a la ruta).
@@ -115,7 +119,7 @@ export function AsteroidsPlayer({ game }: Props) {
             Jugador 1
           </span>
           <span className="font-display text-headline-md uppercase text-primary-fixed drop-shadow-[0_0_5px_#63f7ff]">
-            {PLAYER_LABEL}
+            {player}
           </span>
         </div>
         <div className="flex flex-col items-center">
@@ -199,7 +203,7 @@ export function AsteroidsPlayer({ game }: Props) {
           abre con la puntuación final real. "Jugar de nuevo" cierra el modal y,
           si la partida terminó, reinicia el juego. */}
       <GameOverModal
-        player={PLAYER_LABEL}
+        player={player}
         finalScore={modalScore}
         open={modalOpen}
         onOpenChange={(next) => {
@@ -210,6 +214,8 @@ export function AsteroidsPlayer({ game }: Props) {
           }
           setModalOpen(next);
         }}
+        onSave={() => guardarPuntuacionAsteroids({ score: state.score })}
+        canSave={isAuthenticated}
       />
     </>
   );

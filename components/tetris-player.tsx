@@ -64,13 +64,15 @@ const INITIAL_STATE: GameState = {
   phase: "playing",
 };
 
-// Etiqueta fija: no hay auth en esta spec.
+// Etiqueta de invitado: se usa cuando no hay sesión iniciada.
 const PLAYER_LABEL = "G4M3R_X";
 
 const formatScore = (score: number) => String(score).padStart(7, "0");
 
 type Props = {
   game: Game;
+  isAuthenticated: boolean;
+  displayName?: string;
 };
 
 /**
@@ -79,7 +81,7 @@ type Props = {
  * CRT y sincroniza el HUD React con el estado real del juego vía
  * window.postMessage. El modal "Fin del juego" se cablea en el paso 8.
  */
-export function TetrisPlayer({ game }: Props) {
+export function TetrisPlayer({ game, isAuthenticated, displayName }: Props) {
   const boardRef = useRef<HTMLCanvasElement>(null);
   const nextRef = useRef<HTMLCanvasElement>(null);
   const stopRef = useRef<(() => void) | null>(null);
@@ -88,6 +90,7 @@ export function TetrisPlayer({ game }: Props) {
   const [modalScore, setModalScore] = useState(() => formatScore(0));
   const [skin, setSkin] = useState<TetrisSkin>(() => readStoredSkin());
   const isTouch = useIsTouchDevice();
+  const player = isAuthenticated && displayName ? displayName : PLAYER_LABEL;
 
   // onReady de next/script se dispara al cargar el script y también en cada
   // montaje posterior si ya estaba cargado (navegación SPA de vuelta a la ruta).
@@ -167,7 +170,7 @@ export function TetrisPlayer({ game }: Props) {
             Jugador 1
           </span>
           <span className="font-display text-headline-md uppercase text-primary-fixed drop-shadow-[0_0_5px_#63f7ff]">
-            {PLAYER_LABEL}
+            {player}
           </span>
         </div>
         <div className="flex flex-col items-center">
@@ -285,7 +288,7 @@ export function TetrisPlayer({ game }: Props) {
           abre con la puntuación final real. "Jugar de nuevo" cierra el modal y,
           si la partida terminó, reinicia el motor vía window.restartTetris(). */}
       <GameOverModal
-        player={PLAYER_LABEL}
+        player={player}
         finalScore={modalScore}
         open={modalOpen}
         onOpenChange={(next) => {
@@ -298,6 +301,7 @@ export function TetrisPlayer({ game }: Props) {
         }}
         onPause={() => window.toggleTetrisPause?.()}
         onSave={() => guardarPuntuacionTetris({ score: state.score })}
+        canSave={isAuthenticated}
       />
     </>
   );
