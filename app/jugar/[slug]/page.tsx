@@ -9,7 +9,9 @@ import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { SnakePlayer } from "@/components/snake-player";
 import { TetrisPlayer } from "@/components/tetris-player";
+import { getDisplayName } from "@/lib/auth";
 import { getGame, getGameSlugs } from "@/lib/games";
+import { createClient } from "@/lib/supabase/server";
 
 export async function generateStaticParams() {
   const slugs = await getGameSlugs();
@@ -33,20 +35,47 @@ export default async function ReproductorPage({
     slug === "snake" ||
     slug === "frogger"
   ) {
+    const supabase = await createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    const isAuthenticated = Boolean(user);
+    const displayName = user ? getDisplayName(user) : undefined;
+
     return (
       <div className="flex min-h-[100dvh] flex-col overflow-hidden">
         <SiteHeader variant="nav" />
         <main className="relative z-10 mx-auto flex w-full max-w-arcade flex-grow flex-col items-center justify-center px-4 pb-8 pt-28">
           {slug === "asteroids" ? (
-            <AsteroidsPlayer game={game} />
+            <AsteroidsPlayer
+              game={game}
+              isAuthenticated={isAuthenticated}
+              displayName={displayName}
+            />
           ) : slug === "tetris" ? (
-            <TetrisPlayer game={game} />
+            <TetrisPlayer
+              game={game}
+              isAuthenticated={isAuthenticated}
+              displayName={displayName}
+            />
           ) : slug === "arkanoid" ? (
-            <ArkanoidPlayer game={game} />
+            <ArkanoidPlayer
+              game={game}
+              isAuthenticated={isAuthenticated}
+              displayName={displayName}
+            />
           ) : slug === "snake" ? (
-            <SnakePlayer game={game} />
+            <SnakePlayer
+              game={game}
+              isAuthenticated={isAuthenticated}
+              displayName={displayName}
+            />
           ) : (
-            <FroggerPlayer game={game} />
+            <FroggerPlayer
+              game={game}
+              isAuthenticated={isAuthenticated}
+              displayName={displayName}
+            />
           )}
         </main>
         <SiteFooter />

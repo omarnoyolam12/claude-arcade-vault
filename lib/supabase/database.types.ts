@@ -64,6 +64,7 @@ export type Database = {
           id: string;
           player: string;
           score: number;
+          user_id: string | null;
         };
         Insert: {
           achieved_at?: string | null;
@@ -72,6 +73,7 @@ export type Database = {
           id?: string;
           player: string;
           score: number;
+          user_id?: string | null;
         };
         Update: {
           achieved_at?: string | null;
@@ -80,6 +82,7 @@ export type Database = {
           id?: string;
           player?: string;
           score?: number;
+          user_id?: string | null;
         };
         Relationships: [
           {

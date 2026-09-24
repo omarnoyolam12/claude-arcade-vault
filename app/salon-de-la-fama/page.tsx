@@ -3,11 +3,17 @@ import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { getGames } from "@/lib/games";
 import { getAllLeaderboards } from "@/lib/leaderboards";
+import { createClient } from "@/lib/supabase/server";
 
 export default async function SalonDeLaFamaPage() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
   const [games, leaderboards] = await Promise.all([
     getGames(),
-    getAllLeaderboards(),
+    getAllLeaderboards(user?.id ?? null),
   ]);
 
   return (

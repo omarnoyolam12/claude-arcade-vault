@@ -16,42 +16,47 @@ export interface ScoreEntry {
   player: string;
   score: number; // entero; se formatea en LeaderboardTable
   achievedAt: string | null; // "YYYY-MM-DD" | null (null = "HOY")
-  isCurrentUser?: boolean; // se conserva en el tipo; sin uso hasta que haya auth
+  isCurrentUser?: boolean; // true si la fila pertenece al usuario con sesión iniciada
 }
 
 // Asigna `rank` 1..n a filas ya ordenadas de una tabla de un solo juego.
 function withRanks(
-  rows: Pick<ScoreRow, "player" | "score" | "achieved_at">[],
+  rows: Pick<ScoreRow, "player" | "score" | "achieved_at" | "user_id">[],
+  currentUserId?: string | null,
 ): ScoreEntry[] {
   return rows.map((row, index) => ({
     rank: index + 1,
     player: row.player,
     score: row.score,
     achievedAt: row.achieved_at,
+    isCurrentUser: row.user_id !== null && row.user_id === currentUserId,
   }));
 }
 
-export async function getLeaderboard(slug: string): Promise<ScoreEntry[]> {
+export async function getLeaderboard(
+  slug: string,
+  currentUserId?: string | null,
+): Promise<ScoreEntry[]> {
   const supabase = createClient();
   const { data, error } = await supabase
     .from("scores")
-    .select("player, score, achieved_at")
+    .select("player, score, achieved_at, user_id")
     .eq("game_slug", slug)
     .order("score", { ascending: false })
     .order("achieved_at", { ascending: true, nullsFirst: false });
 
   if (error) throw error;
 
-  return withRanks(data);
+  return withRanks(data, currentUserId);
 }
 
-export async function getAllLeaderboards(): Promise<
-  Record<string, ScoreEntry[]>
-> {
+export async function getAllLeaderboards(
+  currentUserId?: string | null,
+): Promise<Record<string, ScoreEntry[]>> {
   const supabase = createClient();
   const { data, error } = await supabase
     .from("scores")
-    .select("game_slug, player, score, achieved_at")
+    .select("game_slug, player, score, achieved_at, user_id")
     .order("game_slug", { ascending: true })
     .order("score", { ascending: false })
     .order("achieved_at", { ascending: true, nullsFirst: false });
@@ -62,7 +67,7 @@ export async function getAllLeaderboards(): Promise<
   // calcula el `rank` dentro de cada grupo.
   const grouped: Record<
     string,
-    Pick<ScoreRow, "player" | "score" | "achieved_at">[]
+    Pick<ScoreRow, "player" | "score" | "achieved_at" | "user_id">[]
   > = {};
   for (const row of data) {
     (grouped[row.game_slug] ??= []).push(row);
@@ -70,7 +75,7 @@ export async function getAllLeaderboards(): Promise<
 
   const result: Record<string, ScoreEntry[]> = {};
   for (const [gameSlug, rows] of Object.entries(grouped)) {
-    result[gameSlug] = withRanks(rows);
+    result[gameSlug] = withRanks(rows, currentUserId);
   }
   return result;
 }

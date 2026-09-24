@@ -8,6 +8,7 @@ import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { getGame, getGameSlugs } from "@/lib/games";
 import { getLeaderboard } from "@/lib/leaderboards";
+import { createClient } from "@/lib/supabase/server";
 
 export async function generateStaticParams() {
   const slugs = await getGameSlugs();
@@ -21,7 +22,12 @@ export default async function DetalleJuegoPage({
   const game = await getGame(slug);
   if (!game) notFound();
 
-  const leaderboard = await getLeaderboard(slug);
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const leaderboard = await getLeaderboard(slug, user?.id ?? null);
 
   return (
     <>

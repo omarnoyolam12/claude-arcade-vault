@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 
 type Props = {
@@ -21,6 +22,12 @@ type Props = {
    * Sin ella el botón sigue siendo visual.
    */
   onSave?: () => Promise<{ ok: boolean; error?: string }>;
+  /**
+   * Solo tiene efecto cuando `onSave` está presente. En `false` el botón
+   * queda deshabilitado con una invitación a iniciar sesión. Con `true` (o
+   * si se omite) el comportamiento es el actual.
+   */
+  canSave?: boolean;
 };
 
 type SaveState = "idle" | "saving" | "saved" | "error";
@@ -40,6 +47,7 @@ export function GameOverModal({
   onOpenChange,
   onPause,
   onSave,
+  canSave = true,
 }: Props) {
   const [openState, setOpenState] = useState(false);
   const isControlled = openProp !== undefined;
@@ -65,8 +73,16 @@ export function GameOverModal({
     }
   }
 
+  const saveBlocked = Boolean(onSave) && !canSave;
+
   async function handleSave() {
-    if (!onSave || saveState === "saving" || saveState === "saved") return;
+    if (
+      !onSave ||
+      saveBlocked ||
+      saveState === "saving" ||
+      saveState === "saved"
+    )
+      return;
     setSaveState("saving");
     setSaveError(undefined);
     try {
@@ -190,17 +206,32 @@ export function GameOverModal({
               <button
                 type="button"
                 onClick={onSave ? handleSave : undefined}
-                disabled={saveState === "saving" || saveState === "saved"}
+                disabled={
+                  saveBlocked || saveState === "saving" || saveState === "saved"
+                }
                 className="max-w-xs flex-1 border-2 border-outline-variant bg-surface-container-lowest px-8 py-4 font-body text-body-lg uppercase text-on-surface transition-all hover:border-tertiary hover:text-tertiary hover:shadow-[0_0_15px_#fdffb5] active:scale-95 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:border-outline-variant disabled:hover:text-on-surface disabled:hover:shadow-none"
               >
                 {saveLabel}
               </button>
             </div>
 
-            {saveState === "error" && saveError && (
-              <p className="mt-4 font-body text-label-lg text-secondary-container">
-                {saveError}
+            {saveBlocked ? (
+              <p className="mt-4 font-body text-label-lg text-outline">
+                Inicia sesión para guardar tu puntuación.{" "}
+                <Link
+                  href="/acceso"
+                  className="text-primary-fixed underline transition-colors hover:text-primary-fixed-dim"
+                >
+                  Iniciar sesión
+                </Link>
               </p>
+            ) : (
+              saveState === "error" &&
+              saveError && (
+                <p className="mt-4 font-body text-label-lg text-secondary-container">
+                  {saveError}
+                </p>
+              )
             )}
           </div>
         </div>
